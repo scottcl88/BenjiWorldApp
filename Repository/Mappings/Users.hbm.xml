@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Repository"
+                   namespace="Repository.Models">
+
+  <class name="User" table="Users">
+    <id name="UserId">
+      <generator class="native" />
+    </id>
+    <property name="Name" />
+    <property name="Email" />
+    <property name="HashedPassword" />
+    <property name="HashedLoginToken" />
+    <property name="LoginExpiration" />
+    <property name="Blocked" />
+    <property name="Created" />
+    <property name="Deleted" />
+  </class>
+</hibernate-mapping>
