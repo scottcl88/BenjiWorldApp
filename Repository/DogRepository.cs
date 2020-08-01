@@ -15,7 +15,7 @@ namespace Repository
             using (ISession session = NHibernateSession.OpenSession())  // Open a session to conect to the database
             {
                 var dogs = session.Query<Dog>().Where(c => !c.Deleted.HasValue);
-                dogModels = dogs.Select(x => x.ToCarModel()).ToList(); //  Querying to get all the users
+                dogModels = dogs.Select(x => x.ToDogModel()).ToList(); //  Querying to get all the users
             }
             return dogModels;
         }

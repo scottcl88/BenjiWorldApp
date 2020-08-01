@@ -5,7 +5,7 @@ namespace Repository
 {
     public static class DogExtensions
     {
-        public static DogModel ToCarModel(this Dog dbDog)
+        public static DogModel ToDogModel(this Dog dbDog)
         {
             return new DogModel()
             {
@@ -16,6 +16,17 @@ namespace Repository
                 Created = dbDog.Created,
                 Modified = dbDog.Modified,
                 Deleted = dbDog.Deleted
+            };
+        }
+
+        public static HealthModel ToHealthModel(this Health dbHealth)
+        {
+            return new HealthModel()
+            {
+                Dog = dbHealth.Dog.ToDogModel(),
+                Created = dbHealth.Created,
+                Modified = dbHealth.Modified,
+                Deleted = dbHealth.Deleted
             };
         }
     }

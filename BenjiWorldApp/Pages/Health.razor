@@ -1,0 +1,50 @@
+﻿@page "/health"
+@inherits HealthBase
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <h1>Health</h1>
+    </div>
+  </div>
+  <div class="row justify-content-start">
+    <div class="col-auto">
+      <button type="button" class="btn btn-outline-primary btn-md">ADD DATA</button>
+    </div>
+  </div>
+  <div class="row justify-content-start mt-1">
+    <div class="col-6">
+      <form>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Date</label>
+          <RadzenDatePicker Style="display: block;" @bind-Value="CreatedDate" DateFormat="d" />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Weight</label>
+          <RadzenNumeric TValue="decimal?" @bind-Value="Weight" Placeholder="Enter or clear value" Style="display: block;" />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Height</label>
+          <RadzenNumeric TValue="decimal?" @bind-Value="Height" Placeholder="Enter or clear value" Style="display: block;" />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Length</label>
+          <RadzenNumeric TValue="decimal?" @bind-Value="Length" Placeholder="Enter or clear value" Style="display: block;" />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Mouth Circumference</label>
+          <RadzenNumeric TValue="decimal?" @bind-Value="Weight" Disabled="true" Placeholder="Enter or clear value" Style="display: block;" />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Nose to Eye Length</label>
+          <RadzenNumeric TValue="decimal?" @bind-Value="Weight" Disabled="true" Placeholder="Enter or clear value" Style="display: block;" />
+        </div>
+        <div class="form-group">
+          <RadzenCheckBox @bind-Value="FromVet" Style="display: inline-block;" TValue="bool" />
+          <label class="form-check-label" for="exampleCheck1">From Vet</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
