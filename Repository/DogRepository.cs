@@ -15,9 +15,22 @@ namespace Repository
             using (ISession session = NHibernateSession.OpenSession())  // Open a session to conect to the database
             {
                 var dogs = session.Query<Dog>().Where(c => !c.Deleted.HasValue);
-                dogModels = dogs.Select(x => x.ToDogModel()).ToList(); //  Querying to get all the users
+                dogModels = dogs.Select(x => x.ToDogModel()).ToList();
             }
             return dogModels;
+        }
+        public DogModel GetDogById(DogId dogId)
+        {
+            DogModel dogModel = new DogModel();
+            using (ISession session = NHibernateSession.OpenSession())  // Open a session to conect to the database
+            {
+                var dog = session.Query<Dog>().FirstOrDefault(c => c.DogId == dogId.Value);
+                if(dog != null)
+                {
+                    dogModel = dog.ToDogModel();
+                }
+            }
+            return dogModel;
         }
 
         public bool CreateDog(string name)

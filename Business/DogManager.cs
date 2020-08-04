@@ -20,6 +20,10 @@ namespace Business
         {
             return _dogRepository.GetAllDogs().ToList();
         }
+        public DogModel GetDogById(DogId dogId)
+        {
+            return _dogRepository.GetDogById(dogId);
+        }
 
         public bool CreateNewDog(DogCreateRequest request)
         {

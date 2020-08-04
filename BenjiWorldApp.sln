@@ -9,15 +9,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataExtensions", "DataExten
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations", "Migrations\Migrations.csproj", "{7D1F6B20-4B6C-486A-A1D0-B369A7F25495}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{AC2E440F-4534-41D1-A0A2-B30BA0F35613}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{00A62B4A-7B5F-4400-9ACE-709D5D2B924C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenjiWorldApp", "BenjiWorldApp\BenjiWorldApp.csproj", "{418ACDBA-DEC3-4467-91C9-1051D1648724}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenjiAPI", "BenjiAPI\BenjiAPI.csproj", "{47D9886C-CC49-414F-BB07-FB78E359317D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenjiAPI", "BenjiAPI\BenjiAPI.csproj", "{47D9886C-CC49-414F-BB07-FB78E359317D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Models.Shared", "Models.Shared\Models.Shared.shproj", "{4A89F29B-1115-4C93-B9A4-532D1851CFA7}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Models.Shared\Models.Shared.projitems*{00a62b4a-7b5f-4400-9ace-709d5d2b924c}*SharedItemsImports = 5
+		Models.Shared\Models.Shared.projitems*{418acdba-dec3-4467-91c9-1051d1648724}*SharedItemsImports = 5
+		Models.Shared\Models.Shared.projitems*{4a89f29b-1115-4c93-b9a4-532d1851cfa7}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -35,10 +40,6 @@ Global
 		{7D1F6B20-4B6C-486A-A1D0-B369A7F25495}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D1F6B20-4B6C-486A-A1D0-B369A7F25495}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D1F6B20-4B6C-486A-A1D0-B369A7F25495}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC2E440F-4534-41D1-A0A2-B30BA0F35613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC2E440F-4534-41D1-A0A2-B30BA0F35613}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC2E440F-4534-41D1-A0A2-B30BA0F35613}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC2E440F-4534-41D1-A0A2-B30BA0F35613}.Release|Any CPU.Build.0 = Release|Any CPU
 		{00A62B4A-7B5F-4400-9ACE-709D5D2B924C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{00A62B4A-7B5F-4400-9ACE-709D5D2B924C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00A62B4A-7B5F-4400-9ACE-709D5D2B924C}.Release|Any CPU.ActiveCfg = Release|Any CPU

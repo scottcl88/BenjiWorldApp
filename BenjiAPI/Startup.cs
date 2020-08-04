@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Repository;
 
 namespace BenjiAPI
@@ -26,9 +27,10 @@ namespace BenjiAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddControllers();
             services.AddScoped<DogManager>();
-
+            //services.AddCors(c => c.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAnyMethod()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,12 +43,24 @@ namespace BenjiAPI
 
             app.UseRouting();
 
+            app.UseCors(x => x
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .SetIsOriginAllowed(origin => true) // allow any origin
+               .AllowCredentials()); // allow credentials
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+            //app.UseCors(policy =>
+            //    policy.AllowAnyOrigin()
+            //    //policy.WithOrigins("http://localhost:64360/", "http://localhost:59006/")
+            //    .AllowAnyMethod());
+            //    //.WithHeaders(HeaderNames.ContentType, HeaderNames.Authorization, "x-custom-header")
+            //    //.AllowCredentials());
         }
     }
 }

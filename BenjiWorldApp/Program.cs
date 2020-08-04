@@ -17,8 +17,13 @@ namespace BenjiWorldApp
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            //builder.Services.A.AddScoped("BenjiAPI", sp => new HttpClient { BaseAddress = new Uri("http://localhost:59006") });
+
+            //builder.Services.AddHttpClient("BenjiAPI", client => client.BaseAddress = new Uri("http://localhost:59006"));
+
+            builder.Services.AddHttpClient<BenjiAPIClient>(client => client.BaseAddress = new Uri("http://localhost:59006"));
             await builder.Build().RunAsync();
         }
     }
