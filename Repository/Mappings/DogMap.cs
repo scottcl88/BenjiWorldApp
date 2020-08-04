@@ -9,14 +9,14 @@ namespace Repository.Mappings
         public DogMap()
         {
             Table("Dog");
-            Id(x => x.DogId);
-            Map(x => x.Name);
-            Map(x => x.Gender);
-            Map(x => x.Birthdate);
-            Map(x => x.AdoptedDate);
-            Map(x => x.Created);
-            Map(x => x.Modified);
-            Map(x => x.Deleted);
+            Id(x => x.DogId).Not.Nullable();
+            Map(x => x.Name).Not.Nullable();            
+            Map(x => x.Gender).CustomType<Gender>().Not.Nullable();
+            Map(x => x.Birthdate).Nullable();
+            Map(x => x.AdoptedDate).Nullable();
+            Map(x => x.Created).Not.Nullable();
+            Map(x => x.Modified).Not.Nullable();
+            Map(x => x.Deleted).Nullable();
         }
     }
 }

@@ -42,16 +42,16 @@ namespace Repository
             return true;
         }
 
-        public bool UpdateDog(DogModel carModel)
+        public bool UpdateDog(DogModel dogModel)
         {
             using (ISession session = NHibernateSession.OpenSession())
             {
-                Dog foundDog = session.Query<Dog>().FirstOrDefault(c => c.DogId == carModel.DogId.Value);
+                Dog foundDog = session.Query<Dog>().FirstOrDefault(c => c.DogId == dogModel.DogId.Value);
                 if (foundDog == null) return false;
-                foundDog.Name = carModel.Name;
-                foundDog.AdoptedDate = carModel.AdoptedDate;
-                foundDog.Birthdate = carModel.Birthdate;
-                foundDog.Gender = (Models.Gender)carModel.Gender;
+                foundDog.Name = dogModel.Name;
+                foundDog.AdoptedDate = dogModel.AdoptedDate;
+                foundDog.Birthdate = dogModel.Birthdate;
+                foundDog.Gender = (Models.Gender)dogModel.Gender;
                 foundDog.Modified = DateTime.UtcNow;
                 using (ITransaction transaction = session.BeginTransaction())   //  Begin a transaction
                 {

@@ -10,13 +10,13 @@ namespace Migrations
         {
             Create.Table("Dog")
                 .WithColumn("DogId").AsInt64().PrimaryKey().Identity()
-                .WithColumn("Name").AsString()
-                .WithColumn("Birthdate").AsDateTime()
-                .WithColumn("AdoptedDate").AsDateTime()
-                .WithColumn("Gender").AsInt32()
-                .WithColumn("Created").AsDateTime()
-                .WithColumn("Modified").AsDateTime()
-                .WithColumn("Deleted").AsDateTime();
+                .WithColumn("Name").AsString().NotNullable()
+                .WithColumn("Birthdate").AsDateTime().Nullable()
+                .WithColumn("AdoptedDate").AsDateTime().Nullable()
+                .WithColumn("Gender").AsInt32().NotNullable()
+                .WithColumn("Created").AsDateTime().NotNullable()
+                .WithColumn("Modified").AsDateTime().NotNullable()
+                .WithColumn("Deleted").AsDateTime().Nullable();
         }
 
         public override void Down()

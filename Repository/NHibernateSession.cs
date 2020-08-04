@@ -6,6 +6,10 @@ using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using Models;
 using Repository.Mappings;
+using NHibernate.Driver;
+using NHibernate.Dialect;
+using System.Data;
+using System.Reflection;
 
 namespace Repository
 {
@@ -32,10 +36,23 @@ namespace Repository
             //string userConfigurationFile = Path.GetFullPath(currentDir + @"Bin\Mappings\Users.hbm.xml");//@"..\Repository\Mappings\Users.hbm.xml"
             //configuration.AddFile(userConfigurationFile);
             //garage.c2zetmoolnra.us-west-2.rds.amazonaws.com,1433;Initial Catalog=elements;User ID=admin;Password=xb!0YLor9gC0nRK
+
+
+            configuration.DataBaseIntegration(x => {
+                x.ConnectionString = "Server=localhost\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
+                x.Driver<SqlClientDriver>();
+                x.Dialect<MsSql2008Dialect>();
+                x.IsolationLevel = IsolationLevel.RepeatableRead;
+                x.Timeout = 10;
+                x.BatchSize = 10;
+            });
+            //configuration.SessionFactory().GenerateStatistics();
+            //configuration.AddAssembly(Assembly.GetExecutingAssembly());
+
             var dbConn = MsSqlConfiguration.MsSql2008
-                .ConnectionString("Server=localhost\\SQLEXPRESS;Database=master;Trusted_Connection=True;");
-                    //.Username("admin")
-                    //.Password("xb!0YLor9gC0nRK"));
+              .ConnectionString("Server=localhost\\SQLEXPRESS;Database=master;Trusted_Connection=True;").ShowSql();
+            //.Username("admin")
+            //.Password("xb!0YLor9gC0nRK"));
             var sessionFactory = Fluently.Configure()
                 .Database(dbConn)
                 .Mappings(m =>
@@ -47,7 +64,6 @@ namespace Repository
                 })
                     .BuildSessionFactory();
             //ISessionFactory sessionFactory = configuration.BuildSessionFactory();
-
             return sessionFactory.OpenSession();
         }
     }

@@ -9,8 +9,8 @@ namespace Repository.Models
         public virtual Gender Gender { get; set; }
         public virtual DateTime? Birthdate { get; set; }
         public virtual DateTime? AdoptedDate { get; set; }
-        public virtual DateTime? Created { get; set; }
-        public virtual DateTime? Modified { get; set; }
+        public virtual DateTime Created { get; set; }
+        public virtual DateTime Modified { get; set; }
         public virtual DateTime? Deleted { get; set; }
     }
 

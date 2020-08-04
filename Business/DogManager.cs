@@ -11,9 +11,9 @@ namespace Business
     {
         private readonly DogRepository _dogRepository;
 
-        public DogManager(DogRepository dogRepository)
+        public DogManager()
         {
-            _dogRepository = dogRepository;
+            _dogRepository = new DogRepository();
         }
 
         public List<DogModel> GetAllDogs()
