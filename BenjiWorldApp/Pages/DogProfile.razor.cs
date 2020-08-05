@@ -1,7 +1,9 @@
 ﻿using DataExtensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
 using Models;
+using Radzen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,12 +18,15 @@ namespace BenjiWorldApp.Pages
         public DogProfileBase()
         {
             Model = new DogModel();
+            //NotificationService = new NotificationService();
         }
 
         public DogModel Model { get; set; }
-            
+
         [Inject]
         public BenjiAPIClient Client { get; set; }
+        [Inject]
+        protected NotificationService NotificationService { get; set; }
         protected override async Task OnInitializedAsync()
         {
             var myDog = await Client.GetDog(1);
@@ -37,14 +42,22 @@ namespace BenjiWorldApp.Pages
         public async Task HandleValidSubmit()
         {
             var request = new DogUpdateRequest();
+            request.Dog.DogId = Model.DogId;
             request.Dog.Name = Model.Name;
             request.Dog.AdoptedDate = Model.AdoptedDate;
             request.Dog.Birthdate = Model.Birthdate;
             request.Dog.Gender = Model.Gender;
+            request.Dog.Created = Model.Created;
+            request.Dog.Modified = Model.Modified;
+            request.Dog.Deleted = Model.Deleted;
             var result = await Client.UpdateDog(request);
             if (result.IsSuccessStatusCode)
             {
-
+                NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
 
