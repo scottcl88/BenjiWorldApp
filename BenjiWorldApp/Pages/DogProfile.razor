@@ -24,7 +24,13 @@
           <label for="exampleInputEmail1">Birthday</label>
           <RadzenDatePicker Style="display: block;" @bind-Value="Model.Birthdate" DateFormat="d" />
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Gender</label>
+          <RadzenDropDown AllowClear="true" TValue="int"
+                          Data="@Genders"
+                          TextProperty="Name" ValueProperty="Value" Style="display: block;" @bind-Value="GenderValue" Change="@(args => Change(args))" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
       </EditForm>
     </div>
   </div>
