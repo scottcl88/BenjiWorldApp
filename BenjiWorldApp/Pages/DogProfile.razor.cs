@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -39,7 +40,7 @@ namespace BenjiWorldApp.Pages
         {
             try
             {
-                NotificationService.Notify(NotificationSeverity.Info, "Working", value.ToString());
+                //NotificationService.Notify(NotificationSeverity.Info, "Working", value.ToString());
                 Model.Gender = (Gender)value;
                 StateHasChanged();
             }
@@ -53,29 +54,39 @@ namespace BenjiWorldApp.Pages
         }
         protected override async Task OnInitializedAsync()
         {
-            var myDog = await Client.GetDog(1);
-            Model.DogId = myDog.DogId;
-            Model.Name = myDog.Name;
-            Model.AdoptedDate = myDog.AdoptedDate;
-            Model.Birthdate = myDog.Birthdate;
-            Model.Gender = myDog.Gender;
+            var myDog = await Client.GetDefaultDog();
+            Model = new DogModel(myDog);
             GenderValue = (int)myDog.Gender;
-            Model.Created = myDog.Created;
-            Model.Modified = myDog.Modified;
-            Model.Deleted = myDog.Deleted;
         }
         public async Task HandleValidSubmit()
         {
-            var request = new DogUpdateRequest();
-            request.Dog.DogId = Model.DogId;
-            request.Dog.Name = Model.Name;
-            request.Dog.AdoptedDate = Model.AdoptedDate;
-            request.Dog.Birthdate = Model.Birthdate;
-            request.Dog.Gender = Model.Gender;
-            request.Dog.Created = Model.Created;
-            request.Dog.Modified = Model.Modified;
-            request.Dog.Deleted = Model.Deleted;
-            var result = await Client.UpdateDog(request);
+            HttpResponseMessage result = null;
+            if (Model.DogId.Value == 0)
+            {
+                var request = new DogCreateRequest();
+                request.Dog.DogId = Model.DogId;
+                request.Dog.Name = Model.Name;
+                request.Dog.AdoptedDate = Model.AdoptedDate;
+                request.Dog.Birthdate = Model.Birthdate;
+                request.Dog.Gender = Model.Gender;
+                request.Dog.Created = Model.Created;
+                request.Dog.Modified = Model.Modified;
+                request.Dog.Deleted = Model.Deleted;
+                result = await Client.CreateDog(request);
+            }
+            else
+            {
+                var request = new DogUpdateRequest();
+                request.Dog.DogId = Model.DogId;
+                request.Dog.Name = Model.Name;
+                request.Dog.AdoptedDate = Model.AdoptedDate;
+                request.Dog.Birthdate = Model.Birthdate;
+                request.Dog.Gender = Model.Gender;
+                request.Dog.Created = Model.Created;
+                request.Dog.Modified = Model.Modified;
+                request.Dog.Deleted = Model.Deleted;
+                result = await Client.UpdateDog(request);
+            }
             if (result.IsSuccessStatusCode)
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");

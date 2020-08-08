@@ -32,6 +32,13 @@ namespace BenjiWorldApp
         //protected ILoggerFactory LoggerFactory { get; set; }
 
 
+        public async Task<DogModel> GetDefaultDog()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<DogModel>($"/dog/get");
+        }
         public async Task<DogModel> GetDog(int dogId)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -55,6 +62,25 @@ namespace BenjiWorldApp
             var postContent = await result.Content.ReadAsStringAsync();
             Logger.LogInformation("Updating Dog got result: "+ postContent);
             Logger.LogInformation("Updating Dog is success: " + result.IsSuccessStatusCode);
+
+            return result;
+        }
+        public async Task<HttpResponseMessage> CreateDog(DogCreateRequest request)
+        {
+            Logger.LogInformation("Creating Dog with request");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            //var postRequest = JsonSerializer.Serialize<DogUpdateRequest>(request);
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request); //JsonConvert.SerializeObject(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+
+            //var addItem = new { Name = "Test" };
+            Logger.LogInformation("Creating Dog with request 1");
+            var result = await client.PostAsync($"/dog/add", stringContent);
+            var postContent = await result.Content.ReadAsStringAsync();
+            Logger.LogInformation("Creating Dog got result: " + postContent);
+            Logger.LogInformation("Creating Dog is success: " + result.IsSuccessStatusCode);
 
             return result;
         }
