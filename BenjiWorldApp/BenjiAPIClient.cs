@@ -13,9 +13,48 @@ using DataExtensions;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace BenjiWorldApp
 {
+    //protected override void OnInitialized()
+    //{
+    //    GetRelativeTime();
+    //    var cancellationTokenSource = new CancellationTokenSource();
+    //    var task = Repeat.Interval(
+    //            TimeSpan.FromSeconds(15), () => GetRelativeTime(), cancellationTokenSource.Token);
+    //}
+    static class CancellationTokenExtensions
+    {
+        public static bool WaitCancellationRequested(
+            this CancellationToken token,
+            TimeSpan timeout)
+        {
+            return token.WaitHandle.WaitOne(timeout);
+        }
+    }
+    internal static class Repeat
+    {
+        public static Task Interval(
+            TimeSpan pollInterval,
+            Action action,
+            CancellationToken token)
+        {
+            // We don't use Observable.Interval:
+            // If we block, the values start bunching up behind each other.
+            return Task.Factory.StartNew(
+                () =>
+                {
+                    for (; ; )
+                    {
+                        if (token.WaitCancellationRequested(pollInterval))
+                            break;
+
+                        action();
+                    }
+                }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+    }
     public class BenjiAPIClient
     {
         private readonly HttpClient client;
