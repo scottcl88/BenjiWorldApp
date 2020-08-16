@@ -1,6 +1,7 @@
 ﻿using DataExtensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging;
 using Models;
 using Radzen;
@@ -22,14 +23,27 @@ namespace BenjiWorldApp.Pages
         public List<DocumentModel> Products { get; set; }
     }
 
+    public class SelectedFolderModel
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+    }
+
     public class DocumentsBase : ComponentBase
     {
         public DocumentsBase()
         {
             DocumentModels = new List<DocumentModel>();
+            FolderModels = new List<SelectedFolderModel>();
+            NewFolderModel = new FolderModel();
+            UploadUrl = "http://localhost:59006/document/upload/multiple";
         }
-
-        public List<DocumentModel> DocumentModels { get; set; }
+        public int SelectedFolderId { get; set; }
+        public IEnumerable<DocumentModel> DocumentModels { get; set; }
+        public List<SelectedFolderModel> FolderModels { get; set; }
+        public FolderModel NewFolderModel { get; set; }
+        public bool ShowEditFolder { get; set; }
+        public string UploadUrl { get; set; }
 
         [Inject]
         public BenjiAPIClient Client { get; set; }
@@ -39,6 +53,9 @@ namespace BenjiWorldApp.Pages
         {
             var docs = await Client.GetAllDocuments();
             DocumentModels = docs;
+            var folders = await Client.GetAllFolders();
+            FolderModels = folders.Select(x => new SelectedFolderModel() { Id = x.FolderId.Value, Name = x.Name }).ToList();
+
         }
 
         ///////////////////////////////////////////
@@ -131,6 +148,84 @@ namespace BenjiWorldApp.Pages
 
             Log("Expand", $"Text: {args.Text}");
         }
+        ////////////////////////////////////////////////
+        ///  
+        public RadzenUpload upload;
 
+        public int progress;
+        public string info;
+
+        public void OnProgress(UploadProgressArgs args, string name)
+        {
+            this.info = $"% '{name}' / {args.Loaded} of {args.Total} bytes.";
+            this.progress = args.Progress;
+
+            if (args.Progress == 100)
+            {
+                events.Clear();
+                foreach (var file in args.Files)
+                {
+                    events.Add(DateTime.Now, $"Uploaded: {file.Name} / {file.Size} bytes");
+                }
+            }
+        }
+
+        public void Completed(UploadCompleteEventArgs args)
+        {
+            events.Add(DateTime.Now, $"Server response: {args.RawResponse}");
+        }
+
+        public void Change(object value, string name)
+        {
+            var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+
+            events.Add(DateTime.Now, $"{name} value changed to {str}");
+            UploadUrl += $"/{value}";
+            StateHasChanged();
+        }
+
+        public async Task HandleValidSubmit()
+        {
+            HttpResponseMessage result = null;
+            if (NewFolderModel.FolderId == null || NewFolderModel.FolderId.Value == 0)
+            {
+                var request = new FolderCreateRequest();
+                request.Folder.FolderId = NewFolderModel.FolderId;
+                request.Folder.Name = NewFolderModel.Name;
+                request.Folder.Created = NewFolderModel.Created;
+                request.Folder.Modified = NewFolderModel.Modified;
+                request.Folder.Deleted = NewFolderModel.Deleted;
+                result = await Client.CreateFolder(request);
+            }
+            else
+            {
+                var request = new FolderUpdateRequest();
+                request.Folder.FolderId = NewFolderModel.FolderId;
+                request.Folder.Name = NewFolderModel.Name;
+                request.Folder.Created = NewFolderModel.Created;
+                request.Folder.Modified = NewFolderModel.Modified;
+                request.Folder.Deleted = NewFolderModel.Deleted;
+                result = await Client.UpdateFolder(request);
+            }
+            if (result.IsSuccessStatusCode)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
+            }
+        }
+
+        public void AddFolder(MouseEventArgs e)
+        {
+            ShowEditFolder = true;
+            StateHasChanged();
+        }
+        public void EditFolder(MouseEventArgs e)
+        {
+            ShowEditFolder = true;
+            StateHasChanged();
+        }
     }
 }

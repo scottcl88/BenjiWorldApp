@@ -71,6 +71,13 @@ namespace BenjiWorldApp
         //protected ILoggerFactory LoggerFactory { get; set; }
 
 
+        public async Task<List<FolderModel>> GetAllFolders()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<List<FolderModel>>($"/folder/GetAll");
+        }
         public async Task<List<DocumentModel>> GetAllDocuments()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -128,6 +135,27 @@ namespace BenjiWorldApp
             Logger.LogInformation("Creating Dog got result: " + postContent);
             Logger.LogInformation("Creating Dog is success: " + result.IsSuccessStatusCode);
 
+            return result;
+        }
+
+        public async Task<HttpResponseMessage> CreateFolder(FolderCreateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/folder/add", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> UpdateFolder(FolderUpdateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/folder/update", stringContent);
             return result;
         }
     }

@@ -1,5 +1,6 @@
 ﻿@page "/documents"
 @inherits DocumentsBase
+@using DModel = Models.DocumentModel 
 
 <div class="container">
   <div class="row justify-content-center">
@@ -7,12 +8,62 @@
       <h1>Documents</h1>
     </div>
   </div>
+  @if (!ShowEditFolder)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <h3>Upload</h3>
+        <hr />
+      </div>
+      <div class="col-6">
+        <b>Select Folder</b>
+        <RadzenDropDown AllowClear="true" TValue="long" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
+                        Placeholder="Select..." Data="@FolderModels" TextProperty="Name" ValueProperty="Id"
+                        Change="@(args => Change(args, "DropDown with placeholder"))" Style="margin-bottom: 20px" />
+        <button class="btn btn sm btn-block btn-primary" @onclick="AddFolder"><i class="fas fa-folder-plus"></i></button>
+        <button class="btn btn sm btn-block btn-primary" @onclick="EditFolder"><i class="fas fa-edit"></i></button>
+      </div>
+      <div class="col-6">
+        <RadzenUpload Multiple="true" Url="@UploadUrl" Style="margin-bottom: 20px;"
+                      Progress="@((args) => OnProgress(args, "Multiple files upload"))" />
+      </div>
+    </div>
+  }
+  @if (ShowEditFolder)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="NewFolderModel" OnValidSubmit="HandleValidSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-group">
+            <label for="exampleInputPassword1">Name</label>
+            <RadzenTextBox Style="display: block;" @bind-Value="NewFolderModel.Name" />
+          </div>
+          <button type="submit" class="btn btn-primary mt-2 mb-2">Create</button>
+        </EditForm>
+      </div>
+    </div>
+  }
+  <hr />
   <div class="row justify-content-start mt-1">
     <div class="col-6">
       <h3>Files and directories</h3>
       <RadzenTree Change="@LogChange" Data="@entries" Expand="@LoadFiles" Style="width: 100%; height: 300px">
         <RadzenTreeLevel Text="@GetTextForNode" Template="@FileOrFolderTemplate" />
       </RadzenTree>
+    </div>
+  </div>
+  <div class="row justify-content-start mt-1">
+    <div class="col-6">
+      <h3>Files and directories</h3>
+      <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
+                  AllowSorting="true" Data="@DocumentModels"  TItem="DModel"  ColumnWidth="200px">
+        <Columns>
+          <RadzenGridColumn TItem="DModel" Property="DocumentId.Value" Title="Document Id" />
+          <RadzenGridColumn TItem="DModel" Property="FileName" Title="Name" />
+        </Columns>
+      </RadzenGrid>
     </div>
   </div>
 </div>
