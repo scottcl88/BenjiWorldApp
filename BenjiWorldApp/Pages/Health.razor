@@ -1,5 +1,6 @@
 ﻿@page "/health"
 @inherits HealthBase
+@using HModel = Models.HealthModel
 
 <div class="container">
   <div class="row justify-content-center">
@@ -9,42 +10,118 @@
   </div>
   <div class="row justify-content-start">
     <div class="col-auto">
-      <button type="button" class="btn btn-outline-primary btn-md">ADD DATA</button>
+      <button type="button" class="btn btn-outline-primary btn-md" @onclick="AddData">ADD DATA</button>
     </div>
   </div>
-  <div class="row justify-content-start mt-1">
-    <div class="col-6">
-      <form>
-        <div class="form-group">
-          <label for="exampleInputEmail1">Date</label>
-          <RadzenDatePicker Style="display: block;" @bind-Value="CreatedDate" DateFormat="d" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Weight</label>
-          <RadzenNumeric TValue="decimal?" @bind-Value="Weight" Placeholder="Enter or clear value" Style="display: block;" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Height</label>
-          <RadzenNumeric TValue="decimal?" @bind-Value="Height" Placeholder="Enter or clear value" Style="display: block;" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Length</label>
-          <RadzenNumeric TValue="decimal?" @bind-Value="Length" Placeholder="Enter or clear value" Style="display: block;" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Mouth Circumference</label>
-          <RadzenNumeric TValue="decimal?" @bind-Value="Weight" Disabled="true" Placeholder="Enter or clear value" Style="display: block;" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Nose to Eye Length</label>
-          <RadzenNumeric TValue="decimal?" @bind-Value="Weight" Disabled="true" Placeholder="Enter or clear value" Style="display: block;" />
-        </div>
-        <div class="form-group">
-          <RadzenCheckBox @bind-Value="FromVet" Style="display: inline-block;" TValue="bool" />
-          <label class="form-check-label" for="exampleCheck1">From Vet</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+  @if (ShowEditData)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Date</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Created" DateFormat="d" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group" style="margin-top: 28px;">
+                <RadzenCheckBox @bind-Value="Model.FromVet" Style="display: inline-block;" TValue="bool" />
+                <label class="form-check-label" for="exampleCheck1">From Vet</label>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Weight</label>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.Weight" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Waist</label>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.Waist" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Length</label>
+                <small>Nose to butt</small>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.Length" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Tail Length</label>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.TailLength" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Mouth Circumference</label>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.MouthCircumference" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Nose to Eye Length</label>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.NoseEyeLength" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputPassword1">Height</label>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.Height" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
+          <button type="button" class="btn btn-secondary mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
+        </EditForm>
+      </div>
     </div>
-  </div>
+  }
+  @if (!ShowEditData)
+  {
+    <hr />
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <h3>Data</h3>
+        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
+                    AllowSorting="true" Data="@HealthModels" TItem="HModel">
+          <Columns>
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="HModel" Width="150px" Property="HealthId.Value" Title="Health Id" />
+            <RadzenGridColumn TItem="HModel" Property="Weight" Title="Weight" />
+            <RadzenGridColumn TItem="HModel" Property="Created" Title="Created" />
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-sm-12 p-4">
+        <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
+        <RadzenChart>
+          <RadzenLineSeries Smooth="@smooth" Data="@HealthModels" CategoryProperty="Created" Title="2020 Weight" LineType="LineType.Dashed" ValueProperty="Weight">
+            <RadzenMarkers MarkerType="MarkerType.Square" />
+          </RadzenLineSeries>
+          <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />
+          <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Weight" />
+          </RadzenValueAxis>
+        </RadzenChart>
+      </div>
+    </div>
+  }
 </div>

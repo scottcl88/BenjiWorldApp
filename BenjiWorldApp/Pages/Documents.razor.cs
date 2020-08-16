@@ -61,43 +61,6 @@ namespace BenjiWorldApp.Pages
         ///////////////////////////////////////////
         ///
 
-        public IEnumerable<string> entries = null;
-        public Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
-
-        public void Log(string eventName, string value)
-        {
-            events.Add(DateTime.Now, $"{eventName}: {value}");
-        }
-
-        public void LogChange(TreeEventArgs args)
-        {
-            Log("Change", $"Item Text: {args.Text}");
-        }
-
-        public void LogExpand(TreeExpandEventArgs args)
-        {
-            if (args.Value is Category category)
-            {
-                Log("Expand", $"Text: {category.CategoryName}");
-            }
-
-            if (args.Value is string text)
-            {
-                Log("Expand", $"Text: {text}");
-            }
-        }
-
-        protected override void OnInitialized()
-        {
-            entries = Directory.GetDirectories("/")
-                               .Where(entry =>
-                               {
-                                   var name = Path.GetFileName(entry);
-
-                                   return !name.StartsWith(".") && name != "bin" && name != "obj";
-                               });
-        }
-
         public string GetTextForNode(object data)
         {
             return Path.GetFileName((string)data);
@@ -133,8 +96,6 @@ namespace BenjiWorldApp.Pages
                 builder.CloseElement();
             };
             */
-
-            LogExpand(args);
         }
 
         public void LoadFiles(TreeExpandEventArgs args)
@@ -146,7 +107,7 @@ namespace BenjiWorldApp.Pages
             args.Children.HasChildren = (path) => Directory.Exists((string)path);
             args.Children.Template = FileOrFolderTemplate;
 
-            Log("Expand", $"Text: {args.Text}");
+            //Log("Expand", $"Text: {args.Text}");
         }
         ////////////////////////////////////////////////
         ///  
@@ -162,24 +123,24 @@ namespace BenjiWorldApp.Pages
 
             if (args.Progress == 100)
             {
-                events.Clear();
-                foreach (var file in args.Files)
-                {
-                    events.Add(DateTime.Now, $"Uploaded: {file.Name} / {file.Size} bytes");
-                }
+                //events.Clear();
+                //foreach (var file in args.Files)
+                //{
+                //    events.Add(DateTime.Now, $"Uploaded: {file.Name} / {file.Size} bytes");
+                //}
             }
         }
 
         public void Completed(UploadCompleteEventArgs args)
         {
-            events.Add(DateTime.Now, $"Server response: {args.RawResponse}");
+            //events.Add(DateTime.Now, $"Server response: {args.RawResponse}");
         }
 
         public void Change(object value, string name)
         {
             var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
 
-            events.Add(DateTime.Now, $"{name} value changed to {str}");
+            //events.Add(DateTime.Now, $"{name} value changed to {str}");
             UploadUrl += $"/{value}";
             StateHasChanged();
         }

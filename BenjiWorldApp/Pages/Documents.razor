@@ -15,16 +15,15 @@
         <h3>Upload</h3>
         <hr />
       </div>
-      <div class="col-6">
-        <b>Select Folder</b>
+      <div class="col-auto">
         <RadzenDropDown AllowClear="true" TValue="long" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
-                        Placeholder="Select..." Data="@FolderModels" TextProperty="Name" ValueProperty="Id"
-                        Change="@(args => Change(args, "DropDown with placeholder"))" Style="margin-bottom: 20px" />
-        <button class="btn btn sm btn-block btn-primary" @onclick="AddFolder"><i class="fas fa-folder-plus"></i></button>
-        <button class="btn btn sm btn-block btn-primary" @onclick="EditFolder"><i class="fas fa-edit"></i></button>
+                        Placeholder="Select Folder..." Data="@FolderModels" TextProperty="Name" ValueProperty="Id"
+                        Change="@(args => Change(args, "DropDown with placeholder"))" Style="margin-top: 10px;" />
+        <button class="btn btn-sm btn-primary" @onclick="AddFolder" style="margin-top: -28px;"><i class="fas fa-folder-plus"></i></button>
+        <button class="btn btn-sm btn-primary" @onclick="EditFolder" style="margin-top: -28px;"><i class="fas fa-edit"></i></button>
       </div>
       <div class="col-6">
-        <RadzenUpload Multiple="true" Url="@UploadUrl" Style="margin-bottom: 20px;"
+        <RadzenUpload Multiple="true" Url="@UploadUrl" Style=""
                       Progress="@((args) => OnProgress(args, "Multiple files upload"))" />
       </div>
     </div>
@@ -47,21 +46,14 @@
   }
   <hr />
   <div class="row justify-content-start mt-1">
-    <div class="col-6">
-      <h3>Files and directories</h3>
-      <RadzenTree Change="@LogChange" Data="@entries" Expand="@LoadFiles" Style="width: 100%; height: 300px">
-        <RadzenTreeLevel Text="@GetTextForNode" Template="@FileOrFolderTemplate" />
-      </RadzenTree>
-    </div>
-  </div>
-  <div class="row justify-content-start mt-1">
-    <div class="col-6">
-      <h3>Files and directories</h3>
+    <div class="col-12">
+      <h3>Files</h3>
       <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
-                  AllowSorting="true" Data="@DocumentModels"  TItem="DModel"  ColumnWidth="200px">
+                  AllowSorting="true" Data="@DocumentModels"  TItem="DModel">
         <Columns>
-          <RadzenGridColumn TItem="DModel" Property="DocumentId.Value" Title="Document Id" />
+          <RadzenGridColumn Filterable="false" Sortable="false" TItem="DModel" Width="150px" Property="DocumentId.Value" Title="Document Id" />
           <RadzenGridColumn TItem="DModel" Property="FileName" Title="Name" />
+          <RadzenGridColumn TItem="DModel" Property="Folder.Name" Title="Folder" />
         </Columns>
       </RadzenGrid>
     </div>
