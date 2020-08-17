@@ -1,0 +1,90 @@
+﻿@page "/Incident"
+@inherits IncidentBase
+@using IModel = Models.Shared.IncidentModel
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <h1>Incident</h1>
+    </div>
+  </div>
+  <div class="row justify-content-start">
+    <div class="col-auto">
+      <button type="button" class="btn btn-outline-primary btn-md" @onclick="AddData">ADD DATA</button>
+    </div>
+  </div>
+  @if (ShowEditData)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Date</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.IncidentDate" DateFormat="d" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group" style="margin-top: 28px;">
+                <RadzenDropDown AllowClear="true" TValue="int"
+                                Data="@IncidentTypes" Placeholder="Select Type..."
+                                TextProperty="Name" ValueProperty="Value" Style="display: block;" @bind-Value="IncidentTypeValue" Change="@(args => Change(args))" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Title</label>
+                <RadzenTextBox Style="display: block;" @bind-Value="Model.Title" />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Description</label>
+                <RadzenTextArea  Style="display: block;" @bind-Value="Model.Description" />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
+          <button type="button" class="btn btn-secondary mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
+        </EditForm>
+      </div>
+    </div>
+  }
+  @if (!ShowEditData)
+  {
+    <hr />
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <h3>Data</h3>
+        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
+                    AllowSorting="true" Data="@IncidentModels" TItem="IModel">
+          <Columns>
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="IncidentId.Value" Title="Incident Id" />
+            <RadzenGridColumn TItem="IModel" Property="IncidentDate" Title="Incident Date" />
+            <RadzenGridColumn TItem="IModel" Property="IncidentType" Width="125px" Title="Type" />
+            <RadzenGridColumn TItem="IModel" Property="Title" Title="Title" />
+            <RadzenGridColumn TItem="IModel" Property="Description" Title="Description" />
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-sm-12 p-4">
+        <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
+        <RadzenChart>
+          <RadzenLineSeries Smooth="@smooth" Data="@IncidentModels" CategoryProperty="IncidentDate" Title="2020 Incidents" LineType="LineType.Dashed" ValueProperty="IncidentType">
+            <RadzenMarkers MarkerType="MarkerType.Square" />
+          </RadzenLineSeries>
+          <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />
+          <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Incidents" />
+          </RadzenValueAxis>
+        </RadzenChart>
+      </div>
+    </div>
+  }
+</div>

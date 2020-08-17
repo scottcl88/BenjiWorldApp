@@ -14,6 +14,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using System.Threading;
+using Models.Shared;
 
 namespace BenjiWorldApp
 {
@@ -70,6 +71,13 @@ namespace BenjiWorldApp
         //[Inject]
         //protected ILoggerFactory LoggerFactory { get; set; }
 
+        public async Task<List<IncidentModel>> GetAllIncident()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<List<IncidentModel>>($"/incident/GetAll");
+        }
         public async Task<List<HealthModel>> GetAllHealth()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -192,6 +200,35 @@ namespace BenjiWorldApp
             var serialized = System.Text.Json.JsonSerializer.Serialize(request);
             var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
             var result = await client.PostAsync($"/health/update", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> CreateIncident(IncidentCreateRequest request)
+        {
+            Logger.LogInformation("Creating Health with request");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            //var postRequest = JsonSerializer.Serialize<DogUpdateRequest>(request);
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request); //JsonConvert.SerializeObject(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+
+            //var addItem = new { Name = "Test" };
+            Logger.LogInformation("Creating Health with request 1");
+            var result = await client.PostAsync($"/Incident/add", stringContent);
+            var postContent = await result.Content.ReadAsStringAsync();
+            Logger.LogInformation("Creating Health got result: " + postContent);
+            Logger.LogInformation("Creating Health is success: " + result.IsSuccessStatusCode);
+
+            return result;
+        }
+        public async Task<HttpResponseMessage> UpdateIncident(IncidentUpdateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Incident/update", stringContent);
             return result;
         }
     }
