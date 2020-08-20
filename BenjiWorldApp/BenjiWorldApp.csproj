@@ -7,6 +7,7 @@
     <UserSecretsId>aspnet-BlazorNpmLib-3AB59FEC-F75E-4E24-9EC0-874FBF1316F3</UserSecretsId>
     <JsLibRoot>JsLib\</JsLibRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(JsLibRoot)node_modules\**</DefaultItemExcludes>
+    <BlazorCacheBootResources>false</BlazorCacheBootResources>
   </PropertyGroup>
 
   <ItemGroup>

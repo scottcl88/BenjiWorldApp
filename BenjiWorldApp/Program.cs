@@ -25,7 +25,9 @@ namespace BenjiWorldApp
 
             //builder.Services.AddHttpClient("BenjiAPI", client => client.BaseAddress = new Uri("http://localhost:59006"));
 
-            builder.Services.AddHttpClient<BenjiAPIClient>(client => client.BaseAddress = new Uri("http://localhost:59006"));
+            string apiUrl = builder.Configuration["APIUrl"];
+            //builder.Services.AddHttpClient<BenjiAPIClient>(client => client.BaseAddress = new Uri("http://localhost:59006"));
+            builder.Services.AddHttpClient<BenjiAPIClient>(client => client.BaseAddress = new Uri(apiUrl));
 
 
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
