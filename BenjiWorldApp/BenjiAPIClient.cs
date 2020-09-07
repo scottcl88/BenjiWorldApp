@@ -71,6 +71,13 @@ namespace BenjiWorldApp
         //[Inject]
         //protected ILoggerFactory LoggerFactory { get; set; }
 
+        public async Task<List<FoodModel>> GetAllFood()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<List<FoodModel>>($"/food/GetAll");
+        }
         public async Task<List<IncidentModel>> GetAllIncident()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -229,6 +236,35 @@ namespace BenjiWorldApp
             var serialized = System.Text.Json.JsonSerializer.Serialize(request);
             var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
             var result = await client.PostAsync($"/Incident/update", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> CreateFood(FoodCreateRequest request)
+        {
+            Logger.LogInformation("Creating food with request");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            //var postRequest = JsonSerializer.Serialize<DogUpdateRequest>(request);
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request); //JsonConvert.SerializeObject(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+
+            //var addItem = new { Name = "Test" };
+            Logger.LogInformation("Creating food with request 1");
+            var result = await client.PostAsync($"/food/add", stringContent);
+            var postContent = await result.Content.ReadAsStringAsync();
+            Logger.LogInformation("Creating food got result: " + postContent);
+            Logger.LogInformation("Creating food is success: " + result.IsSuccessStatusCode);
+
+            return result;
+        }
+        public async Task<HttpResponseMessage> UpdateFood(FoodUpdateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/food/update", stringContent);
             return result;
         }
     }
