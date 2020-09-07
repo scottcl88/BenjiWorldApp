@@ -52,6 +52,7 @@ namespace BenjiWorldApp.Pages
         {
             var myDog = await Client.GetDefaultDog();
             DogModel = new DogModel(myDog);
+            Model.Dog = DogModel;
             FoodModels = await Client.GetAllFood();
         }
         public async Task HandleValidSubmit()
