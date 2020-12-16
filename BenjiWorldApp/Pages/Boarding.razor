@@ -1,0 +1,68 @@
+﻿@page "/boarding"
+@inherits BoardingBase
+@using IModel = Models.Shared.BoardingModel
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <h1>Boarding</h1>
+    </div>
+  </div>
+  <div class="row justify-content-start">
+    <div class="col-auto">
+      <button type="button" class="btn btn-outline-primary btn-md" @onclick="AddData">ADD DATA</button>
+    </div>
+  </div>
+  @if (ShowEditData)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Date</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.StartDateTime" DateFormat="d" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Company</label>
+                <RadzenTextBox Style="display: block;" @bind-Value="Model.Company" />
+              </div>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Comments</label>
+                <RadzenTextArea Style="display: block;" @bind-Value="Model.Comments" />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
+          <button type="button" class="btn btn-secondary mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
+        </EditForm>
+      </div>
+    </div>
+  }
+  @if (!ShowEditData)
+  {
+    <hr />
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <h3>Data</h3>
+        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
+                    AllowSorting="true" Data="@BoardingModels" TItem="IModel">
+          <Columns>
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="BoardingId.Value" Title="Boarding Id" />
+            <RadzenGridColumn TItem="IModel" Property="StartDateTime" Title="Start Date" />
+            <RadzenGridColumn TItem="IModel" Property="EndDateTime" Width="125px" Title="End Date" />
+            <RadzenGridColumn TItem="IModel" Property="Company" Title="Company" />
+            <RadzenGridColumn TItem="IModel" Property="Comments" Title="Comments" />
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+  }
+</div>
