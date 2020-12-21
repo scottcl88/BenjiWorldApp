@@ -1,45 +1,138 @@
 ﻿@page "/vaccines"
 @inherits VaccinesBase
+@using IModel = Models.Shared.VaccineModel
 
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-auto">
-      <h1>Dog Profile</h1>
+      <h1>Vaccines</h1>
     </div>
   </div>
-  <div class="row justify-content-start mt-1">
-    <div class="col-6">
-      <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="form-group">
-          <label for="exampleInputPassword1">Name</label>
-          <RadzenTextBox Style="display: block;" @bind-Value="Model.Name" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputEmail1">Adopted</label>
-          <RadzenDatePicker Style="display: block;" @bind-Value="Model.AdoptedDate" DateFormat="d" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputEmail1">Birthday</label>
-          <RadzenDatePicker Style="display: block;" @bind-Value="Model.Birthdate" DateFormat="d" />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputEmail1">Gender</label>
-          <RadzenDropDown AllowClear="true" TValue="int"
-                          Data="@Genders"
-                          TextProperty="Name" ValueProperty="Value" Style="display: block;" @bind-Value="GenderValue" Change="@(args => Change(args))" />
-        </div>
-        <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
-      </EditForm>
-    </div>
-  </div>
-  <div class="row justify-content-start mt-2">
-    <div class="col-8">
-      <div class="form-group">
-        <label for="exampleInputEmail1" style="margin-right: 5px;">Created on <b>@Model.Created?.ToString("MM/dd/yy h:mm tt")</b></label> |
-        <label for="exampleInputEmail1" style="margin-left: 5px;">Modified on <b>@Model.Modified?.ToString("MM/dd/yy h:mm tt")</b></label>
+  @if (ShowEditData)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Title</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Title" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Received</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Received" DateFormat="MM/dd/yyyy"/>
+              </div>
+              <div class="form-group">
+                <label>Expiration</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Expiration" DateFormat="MM/dd/yyyy"/>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Doctor</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Doctor" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Company</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Company" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Address</label>
+                <RadzenTextArea class="col-6" Style="display: block;" @bind-Value="Model.Address" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Comments</label>
+                <RadzenTextArea class="col-6" Style="display: block;" @bind-Value="Model.Comments" />
+              </div>
+            </div>
+          </div>
+          @if (Model.VaccineId != null && Model.VaccineId.Value > 0)
+          {
+            <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
+            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
+            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-3" @onclick="ShowInlineDialog">Delete</button>
+          }
+          else
+          {
+            <button type="submit" class="btn btn-primary mt-2 mb-2">Add</button>
+            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2 offset-4" @onclick="CancelEditData">Cancel</button>
+          }
+
+        </EditForm>
       </div>
     </div>
-  </div>
+  }
+  @if (!ShowEditData)
+  {
+    <div class="row justify-content-start">
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary btn-md" @onclick="AddData">ADD DATA</button>
+      </div>
+    </div>
+    <hr />
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <h3>Data</h3>
+        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="5"
+                    AllowSorting="true" Data="@VaccineModels" TItem="IModel">
+          <Columns>
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="VaccineId.Value" Title="Id">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="IModel" Property="Title" Title="Title" />
+            <RadzenGridColumn TItem="IModel" Property="Received" Title="Received">
+              <Template Context="data">
+                @String.Format("{0:d}", data.Received)
+              </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="IModel" Property="Expiration" Title="Expiration">
+              <Template Context="data">
+                @String.Format("{0:d}", data.Expiration)
+              </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="IModel">
+              <Template Context="data">
+                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>
+              </Template>   
+              <FooterTemplate>
+                Total Records: <b>@VaccineModels.Count()</b>
+              </FooterTemplate>
+            </RadzenGridColumn>
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+  }
 </div>
+@code {
+  async Task ShowInlineDialog() => await DialogService.OpenAsync("Are you sure?", ds =>
+  @<div>
+    <p Style="margin-bottom: 1rem">Are you sure you want to delete?</p>
+    <div class="row">
+      <div class="col-md-12">
+        <RadzenButton Text="Yes" Click="() => ds.Close(true)" ButtonStyle="ButtonStyle.Danger" Style="margin-bottom: 10px; width: 150px" />
+        <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px" />
+      </div>
+    </div>
+  </div>);
+}

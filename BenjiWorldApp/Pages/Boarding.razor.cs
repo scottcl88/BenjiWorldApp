@@ -97,8 +97,8 @@ namespace BenjiWorldApp.Pages
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
                 ShowEditData = false;
-                StateHasChanged();
                 BoardingModels = await Client.GetAllBoarding();
+                StateHasChanged();
             }
             else
             {

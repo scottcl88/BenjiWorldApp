@@ -92,6 +92,13 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<BoardingModel>>($"/boarding/GetAll");
         }
+        public async Task<List<VaccineModel>> GetAllVaccines()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<List<VaccineModel>>($"/vaccine/GetAll");
+        }
         public async Task<List<HealthModel>> GetAllHealth()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -282,6 +289,45 @@ namespace BenjiWorldApp
             var serialized = System.Text.Json.JsonSerializer.Serialize(request);
             var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
             var result = await client.PostAsync($"/Boarding/delete", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> CreateVaccine(VaccineCreateRequest request)
+        {
+            Logger.LogInformation("Creating Vaccine with request");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            //var postRequest = JsonSerializer.Serialize<DogUpdateRequest>(request);
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request); //JsonConvert.SerializeObject(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+
+            //var addItem = new { Name = "Test" };
+            Logger.LogInformation("Creating Vaccine with request 1");
+            var result = await client.PostAsync($"/Vaccine/add", stringContent);
+            var postContent = await result.Content.ReadAsStringAsync();
+            Logger.LogInformation("Creating Vaccine got result: " + postContent);
+            Logger.LogInformation("Creating Vaccine is success: " + result.IsSuccessStatusCode);
+
+            return result;
+        }
+        public async Task<HttpResponseMessage> UpdateVaccine(VaccineUpdateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Vaccine/update", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> DeleteVaccine(VaccineDeleteRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Vaccine/delete", stringContent);
             return result;
         }
         public async Task<HttpResponseMessage> CreateFood(FoodCreateRequest request)
