@@ -274,6 +274,16 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Boarding/update", stringContent);
             return result;
         }
+        public async Task<HttpResponseMessage> DeleteBoarding(BoardingDeleteRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Boarding/delete", stringContent);
+            return result;
+        }
         public async Task<HttpResponseMessage> CreateFood(FoodCreateRequest request)
         {
             Logger.LogInformation("Creating food with request");

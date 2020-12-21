@@ -8,11 +8,6 @@
       <h1>Boarding</h1>
     </div>
   </div>
-  <div class="row justify-content-start">
-    <div class="col-auto">
-      <button type="button" class="btn btn-outline-primary btn-md" @onclick="AddData">ADD DATA</button>
-    </div>
-  </div>
   @if (ShowEditData)
   {
     <div class="row justify-content-start mt-1">
@@ -23,31 +18,86 @@
           <div class="row justify-content-start mt-1">
             <div class="col-6">
               <div class="form-group">
-                <label for="exampleInputEmail1">Date</label>
-                <RadzenDatePicker Style="display: block;" @bind-Value="Model.StartDateTime" DateFormat="d" />
+                <label>Start</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.StartDateTime" HourFormat="12" DateFormat="MM/dd/yyyy h:mm tt" ShowTime="true" />
+              </div>
+              <div class="form-group">
+                <label>End</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.EndDateTime" HourFormat="12" DateFormat="MM/dd/yyyy h:mm tt" ShowTime="true" />
               </div>
             </div>
           </div>
           <div class="row justify-content-start mt-1">
             <div class="col-6">
               <div class="form-group">
-                <label for="exampleInputEmail1">Company</label>
-                <RadzenTextBox Style="display: block;" @bind-Value="Model.Company" />
-              </div>
-              <div class="form-group">
-                <label for="exampleInputEmail1">Comments</label>
-                <RadzenTextArea Style="display: block;" @bind-Value="Model.Comments" />
+                <label>Payment</label>
+                <RadzenNumeric TValue="decimal?" @bind-Value="Model.PaymentAmount" Placeholder="Enter or clear value" Style="display: block;" />
               </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
-          <button type="button" class="btn btn-secondary mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Company</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Company" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Address</label>
+                <RadzenTextArea class="col-6" Style="display: block;" @bind-Value="Model.Address" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Comments</label>
+                <RadzenTextArea class="col-6" Style="display: block;" @bind-Value="Model.Comments" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Reason</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Reason" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Website</label>
+                <RadzenTextArea class="col-6" Style="display: block;" @bind-Value="Model.Website" />
+              </div>
+            </div>
+          </div>
+          @if (Model.BoardingId != null && Model.BoardingId.Value > 0)
+          {
+            <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
+            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
+            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-3" @onclick="ShowInlineDialog">Delete</button>
+          }
+          else
+          {
+            <button type="submit" class="btn btn-primary mt-2 mb-2">Add</button>
+            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2 offset-4" @onclick="CancelEditData">Cancel</button>
+          }
+
         </EditForm>
       </div>
     </div>
   }
   @if (!ShowEditData)
   {
+    <div class="row justify-content-start">
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary btn-md" @onclick="AddData">ADD DATA</button>
+      </div>
+    </div>
     <hr />
     <div class="row justify-content-start mt-1">
       <div class="col-12">
@@ -55,14 +105,40 @@
         <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
                     AllowSorting="true" Data="@BoardingModels" TItem="IModel">
           <Columns>
-            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="BoardingId.Value" Title="Boarding Id" />
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="BoardingId.Value" Title="Id">
+              <FooterTemplate>
+                Total Visits: <b>@BoardingModels.Count()</b>
+              </FooterTemplate>
+            </RadzenGridColumn>
             <RadzenGridColumn TItem="IModel" Property="StartDateTime" Title="Start Date" />
             <RadzenGridColumn TItem="IModel" Property="EndDateTime" Width="125px" Title="End Date" />
             <RadzenGridColumn TItem="IModel" Property="Company" Title="Company" />
-            <RadzenGridColumn TItem="IModel" Property="Comments" Title="Comments" />
+            <RadzenGridColumn TItem="IModel" Property="Reason" Title="Reason" />
+            <RadzenGridColumn TItem="IModel" Property="PaymentAmount" Title="Payment">
+              <FooterTemplate>
+                Total Cost: <b>@BoardingModels.Sum(x => x.PaymentAmount)</b>
+              </FooterTemplate>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="IModel">
+              <Template Context="data">
+                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>
+              </Template>
+            </RadzenGridColumn>
           </Columns>
         </RadzenGrid>
       </div>
     </div>
   }
 </div>
+@code {
+  async Task ShowInlineDialog() => await DialogService.OpenAsync("Are you sure?", ds =>
+  @<div>
+    <p Style="margin-bottom: 1rem">Are you sure you want to delete?</p>
+    <div class="row">
+      <div class="col-md-12">
+        <RadzenButton Text="Yes" Click="() => ds.Close(true)" ButtonStyle="ButtonStyle.Danger" Style="margin-bottom: 10px; width: 150px" />
+        <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px" />
+      </div>
+    </div>
+  </div>);
+}

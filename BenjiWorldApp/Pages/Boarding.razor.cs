@@ -1,4 +1,5 @@
-﻿using DataExtensions;
+﻿using BenjiWorldApp.Shared;
+using DataExtensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Models;
@@ -32,6 +33,8 @@ namespace BenjiWorldApp.Pages
         public BenjiAPIClient Client { get; set; }
         [Inject]
         protected NotificationService NotificationService { get; set; }
+        [Inject]
+        protected DialogService DialogService { get; set; }
         public BoardingModel Model { get; set; }
         public DogModel DogModel { get; set; }
         public bool ShowEditData { get; set; }
@@ -51,6 +54,7 @@ namespace BenjiWorldApp.Pages
             var myDog = await Client.GetDefaultDog();
             DogModel = new DogModel(myDog);
             BoardingModels = await Client.GetAllBoarding();
+            DialogService.OnClose += (res) => Close(res);
         }
         public async Task HandleValidSubmit()
         {
@@ -61,16 +65,32 @@ namespace BenjiWorldApp.Pages
                 request.Boarding.Created = Model.Created;
                 request.Boarding.Modified = DateTime.UtcNow;
                 request.Boarding.Dog = DogModel;
+                request.Boarding.PaymentAmount = Model.PaymentAmount;
+                request.Boarding.Comments = Model.Comments;
+                request.Boarding.Company = Model.Company;
+                request.Boarding.Address = Model.Address;
+                request.Boarding.Reason = Model.Reason;
+                request.Boarding.StartDateTime = Model.StartDateTime;
+                request.Boarding.EndDateTime = Model.EndDateTime;
+                request.Boarding.Website = Model.Website;
                 result = await Client.CreateBoarding(request);
             }
             else
             {
                 var request = new BoardingUpdateRequest();
                 request.Boarding.BoardingId = Model.BoardingId;
+                request.Boarding.PaymentAmount = Model.PaymentAmount;
+                request.Boarding.Comments = Model.Comments;
+                request.Boarding.Company = Model.Company;
+                request.Boarding.Address = Model.Address;
+                request.Boarding.Reason = Model.Reason;
+                request.Boarding.StartDateTime = Model.StartDateTime;
+                request.Boarding.EndDateTime = Model.EndDateTime;
                 request.Boarding.Deleted = Model.Deleted;
                 request.Boarding.Created = Model.Created;
                 request.Boarding.Modified = Model.Modified;
                 request.Boarding.Dog = DogModel;
+                request.Boarding.Website = Model.Website;
                 result = await Client.UpdateBoarding(request);
             }
             if (result.IsSuccessStatusCode)
@@ -88,11 +108,16 @@ namespace BenjiWorldApp.Pages
         public void AddData(MouseEventArgs e)
         {
             ShowEditData = true;
+            Model = new BoardingModel
+            {
+                Created = DateTime.UtcNow
+            };
             StateHasChanged();
         }
-        public void EditData(MouseEventArgs e)
+        public void EditData(MouseEventArgs e, BoardingModel model)
         {
             ShowEditData = true;
+            Model = model;
             StateHasChanged();
         }
         public void CancelEditData(MouseEventArgs e)
@@ -100,14 +125,28 @@ namespace BenjiWorldApp.Pages
             ShowEditData = false;
             StateHasChanged();
         }
-        //////////////////////////
-        ///
-        public bool smooth = true;
-        public class DataItem
+        public async Task DeleteData()
         {
-            public DateTime Date { get; set; }
-            public decimal Weight { get; set; }
+            var result = await Client.DeleteBoarding(new BoardingDeleteRequest() { BoardingId = Model.BoardingId });
+            if (result.IsSuccessStatusCode)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Deleted successfully");
+                ShowEditData = false;
+                BoardingModels = await Client.GetAllBoarding();
+                StateHasChanged();
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
+            }
         }
 
+        public async Task Close(dynamic result)
+        {
+            if (result)
+            {
+                await DeleteData();
+            }
+        }
     }
 }
