@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using System.Threading;
 using Models.Shared;
+using System.IO;
 
 namespace BenjiWorldApp
 {
@@ -252,6 +253,16 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Incident/update", stringContent);
             return result;
         }
+        public async Task<HttpResponseMessage> DeleteIncident(IncidentDeleteRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Incident/delete", stringContent);
+            return result;
+        }
         public async Task<HttpResponseMessage> CreateBoarding(BoardingCreateRequest request)
         {
             Logger.LogInformation("Creating Health with request");
@@ -357,6 +368,26 @@ namespace BenjiWorldApp
             var serialized = System.Text.Json.JsonSerializer.Serialize(request);
             var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
             var result = await client.PostAsync($"/food/update", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> UpdateDocument(DocumentUpdateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Document/update", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> DeleteDocument(DocumentDeleteRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Document/delete", stringContent);
             return result;
         }
     }

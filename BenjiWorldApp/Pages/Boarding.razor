@@ -79,7 +79,7 @@
           {
             <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
             <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
-            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-3" @onclick="ShowInlineDialog">Delete</button>
+            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-3" @onclick="ConfirmDelete">Delete</button>
           }
           else
           {
@@ -119,7 +119,7 @@
                 Total Cost: <b>@BoardingModels.Sum(x => x.PaymentAmount)</b>
               </FooterTemplate>
             </RadzenGridColumn>
-            <RadzenGridColumn TItem="IModel">
+            <RadzenGridColumn TItem="IModel" Width="75px">
               <Template Context="data">
                 <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>
               </Template>
@@ -131,7 +131,7 @@
   }
 </div>
 @code {
-  async Task ShowInlineDialog() => await DialogService.OpenAsync("Are you sure?", ds =>
+  async Task ConfirmDelete() => await DialogService.OpenAsync("Are you sure?", ds =>
   @<div>
     <p Style="margin-bottom: 1rem">Are you sure you want to delete?</p>
     <div class="row">

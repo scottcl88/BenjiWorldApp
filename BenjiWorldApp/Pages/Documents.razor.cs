@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Logging;
 using Models;
 using Radzen;
@@ -17,8 +18,9 @@ using System.Threading.Tasks;
 
 namespace BenjiWorldApp.Pages
 {
-    public class Category {
-    
+    public class Category
+    {
+
         public string CategoryName { get; set; }
         public List<DocumentModel> Products { get; set; }
     }
@@ -36,116 +38,64 @@ namespace BenjiWorldApp.Pages
             DocumentModels = new List<DocumentModel>();
             FolderModels = new List<SelectedFolderModel>();
             NewFolderModel = new FolderModel();
-            UploadUrl = "http://localhost:59006/document/upload/multiple";
+            var builder = WebAssemblyHostBuilder.CreateDefault();
+            APIUrl = builder.Configuration["APIUrl"];
+            UploadUrl = APIUrl + "/document/upload/multiple";
         }
-        public int SelectedFolderId { get; set; }
+        public long SelectedFolderId { get; set; }
         public IEnumerable<DocumentModel> DocumentModels { get; set; }
         public List<SelectedFolderModel> FolderModels { get; set; }
         public FolderModel NewFolderModel { get; set; }
+        public DocumentModel Model { get; set; }
         public bool ShowEditFolder { get; set; }
+        public bool ShowEditDocument { get; set; }
         public string UploadUrl { get; set; }
+        public string APIUrl { get; set; }
 
         [Inject]
         public BenjiAPIClient Client { get; set; }
         [Inject]
-        protected NotificationService NotificationService { get; set; }    
+        protected NotificationService NotificationService { get; set; }
         protected override async Task OnInitializedAsync()
         {
             var docs = await Client.GetAllDocuments();
             DocumentModels = docs;
             var folders = await Client.GetAllFolders();
             FolderModels = folders.Select(x => new SelectedFolderModel() { Id = x.FolderId.Value, Name = x.Name }).ToList();
-
+            SelectedFolderId = FolderModels.First().Id;
+            StateHasChanged();
         }
 
         ///////////////////////////////////////////
         ///
-
-        public string GetTextForNode(object data)
-        {
-            return Path.GetFileName((string)data);
-        }
-
-        public RenderFragment<RadzenTreeItem> FileOrFolderTemplate = (context) => builder =>
-        {
-            string path = context.Value as string;
-            bool isDirectory = Directory.Exists(path);
-
-            builder.OpenComponent<RadzenIcon>(0);
-            builder.AddAttribute(1, "Icon", isDirectory ? "folder" : "insert_drive_file");
-            if (!isDirectory)
-            {
-                builder.AddAttribute(2, "Style", "margin-left: 24px");
-            }
-            builder.CloseComponent();
-            builder.AddContent(3, context.Text);
-        };
-
-        public void OnExpand(TreeExpandEventArgs args)
-        {
-            var category = args.Value as Category;
-
-            args.Children.Data = category.Products;
-            args.Children.TextProperty = "ProductName";
-            args.Children.HasChildren = (product) => false;
-
-            /* Optional template
-            args.Children.Template = context => builder => {
-                builder.OpenElement(1, "strong");
-                builder.AddContent(2, (context.Value as Product).ProductName);
-                builder.CloseElement();
-            };
-            */
-        }
-
-        public void LoadFiles(TreeExpandEventArgs args)
-        {
-            var directory = args.Value as string;
-
-            args.Children.Data = Directory.EnumerateFileSystemEntries(directory);
-            args.Children.Text = GetTextForNode;
-            args.Children.HasChildren = (path) => Directory.Exists((string)path);
-            args.Children.Template = FileOrFolderTemplate;
-
-            //Log("Expand", $"Text: {args.Text}");
-        }
-        ////////////////////////////////////////////////
-        ///  
         public RadzenUpload upload;
 
-        public int progress;
-        public string info;
+        public double Progress { get; set; }
 
-        public void OnProgress(UploadProgressArgs args, string name)
+        public void OnProgress(UploadProgressArgs args)
         {
-            this.info = $"% '{name}' / {args.Loaded} of {args.Total} bytes.";
-            this.progress = args.Progress;
-
-            if (args.Progress == 100)
-            {
-                //events.Clear();
-                //foreach (var file in args.Files)
-                //{
-                //    events.Add(DateTime.Now, $"Uploaded: {file.Name} / {file.Size} bytes");
-                //}
-            }
+            Progress = args.Progress;
         }
 
-        public void Completed(UploadCompleteEventArgs args)
+        public async Task Completed(UploadCompleteEventArgs args)
         {
-            //events.Add(DateTime.Now, $"Server response: {args.RawResponse}");
+            NotificationService.Notify(NotificationSeverity.Success, "Uploaded Successfully");
+            DocumentModels = await Client.GetAllDocuments();
+            Progress = 0;
+            StateHasChanged();
+        }
+        public void Error(UploadErrorEventArgs args)
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Failed: " + args.Message);
         }
 
-        public void Change(object value, string name)
+        public void Change(object value)
         {
-            var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
-
-            //events.Add(DateTime.Now, $"{name} value changed to {str}");
-            UploadUrl += $"/{value}";
+            SelectedFolderId = (long)value;
             StateHasChanged();
         }
 
-        public async Task HandleValidSubmit()
+        public async Task HandleValidFolderSubmit()
         {
             HttpResponseMessage result = null;
             if (NewFolderModel.FolderId == null || NewFolderModel.FolderId.Value == 0)
@@ -171,13 +121,54 @@ namespace BenjiWorldApp.Pages
             if (result.IsSuccessStatusCode)
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
+                DocumentModels = await Client.GetAllDocuments();
+                ShowEditFolder = false;
+                ShowEditDocument = false;
+                StateHasChanged();
             }
             else
             {
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
+        public async Task HandleValidDocumentSubmit()
+        {
+            HttpResponseMessage result = null;
 
+            var request = new DocumentUpdateRequest();
+            request.Document.DocumentId = Model.DocumentId;
+            request.Document.FileName = Model.FileName;
+            request.Document.Folder = new FolderModel() { FolderId = new FolderId() { Value = SelectedFolderId } };
+            request.Document.Description = Model.Description;
+            result = await Client.UpdateDocument(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
+                DocumentModels = await Client.GetAllDocuments();
+                SelectedFolderId = FolderModels.First().Id;
+                ShowEditFolder = false;
+                ShowEditDocument = false;
+                StateHasChanged();
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
+            }
+        }
+        public void EditData(MouseEventArgs e, DocumentModel model)
+        {
+            Model = model;
+            SelectedFolderId = model.Folder.FolderId.Value;
+            ShowEditDocument = true;
+            StateHasChanged();
+        }
+        public void CancelEditData(MouseEventArgs e)
+        {
+            ShowEditFolder = false;
+            ShowEditDocument = false;
+            StateHasChanged();
+        }
         public void AddFolder(MouseEventArgs e)
         {
             ShowEditFolder = true;
@@ -187,6 +178,22 @@ namespace BenjiWorldApp.Pages
         {
             ShowEditFolder = true;
             StateHasChanged();
+        }
+        public async Task DeleteData(MouseEventArgs e)
+        {
+            var result = await Client.DeleteDocument(new DocumentDeleteRequest() { DocumentId = Model.DocumentId });
+            if (result.IsSuccessStatusCode)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Deleted successfully");
+                DocumentModels = await Client.GetAllDocuments();
+                ShowEditFolder = false;
+                ShowEditDocument = false;
+                StateHasChanged();
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
+            }
         }
     }
 }

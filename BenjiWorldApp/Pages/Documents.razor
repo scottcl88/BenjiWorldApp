@@ -1,6 +1,6 @@
 ﻿@page "/documents"
 @inherits DocumentsBase
-@using DModel = Models.DocumentModel 
+@using DModel = Models.DocumentModel
 
 <div class="container">
   <div class="row justify-content-center">
@@ -8,7 +8,50 @@
       <h1>Documents</h1>
     </div>
   </div>
-  @if (!ShowEditFolder)
+  @if (ShowEditFolder)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="NewFolderModel" OnValidSubmit="HandleValidFolderSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-group">
+            <label>Folder Name</label>
+            <RadzenTextBox Style="display: block;" @bind-Value="NewFolderModel.Name" />
+          </div>
+          <button type="submit" class="btn btn-primary mt-2 mb-2">Create Folder</button>
+          <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2 offset-4" @onclick="CancelEditData">Cancel</button>
+        </EditForm>
+      </div>
+    </div>
+  }
+  @if (ShowEditDocument)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="Model" OnValidSubmit="HandleValidDocumentSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="form-group">
+            <label>Filename</label>
+            <RadzenTextBox  class="col-6" Style="display: block;" @bind-Value="Model.FileName" />
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <RadzenTextArea  class="col-6" Style="display: block;" @bind-Value="Model.Description" />
+          </div>
+          <div class="form-group">
+            <RadzenDropDown TValue="long" Placeholder="Select Folder..." Data="@FolderModels" TextProperty="Name" ValueProperty="Id" Value="SelectedFolderId"
+                            Change="@Change" Style="margin-top: 10px;" />
+          </div>
+          <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
+          <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2 offset-4" @onclick="CancelEditData">Cancel</button>
+          <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-4" @onclick="DeleteData">Delete</button>
+        </EditForm>
+      </div>
+    </div>
+  }
+  @if (!ShowEditFolder && !ShowEditDocument)
   {
     <div class="row justify-content-start mt-1">
       <div class="col-12">
@@ -16,46 +59,41 @@
         <hr />
       </div>
       <div class="col-auto">
-        <RadzenDropDown AllowClear="true" TValue="long" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
-                        Placeholder="Select Folder..." Data="@FolderModels" TextProperty="Name" ValueProperty="Id"
-                        Change="@(args => Change(args, "DropDown with placeholder"))" Style="margin-top: 10px;" />
+        <RadzenDropDown TValue="long" Placeholder="Select Folder..." Data="@FolderModels" TextProperty="Name" ValueProperty="Id" Value="SelectedFolderId"
+                        Change="@Change" Style="margin-top: 10px;" />
         <button class="btn btn-sm btn-primary" @onclick="AddFolder" style="margin-top: -28px;"><i class="fas fa-folder-plus"></i></button>
         <button class="btn btn-sm btn-primary" @onclick="EditFolder" style="margin-top: -28px;"><i class="fas fa-edit"></i></button>
       </div>
       <div class="col-6">
-        <RadzenUpload Multiple="true" Url="@UploadUrl" Style=""
-                      Progress="@((args) => OnProgress(args, "Multiple files upload"))" />
+        <RadzenUpload Multiple="true" Url="@($"{UploadUrl}/{SelectedFolderId}")" ChooseText="Upload File" Accept="image/*"
+                      Progress="@OnProgress" Complete="Completed" Error="Error" />
+      </div>
+      <div class="col-6">
+        @if (Progress > 0)
+        {
+          <RadzenProgressBar @bind-Value="@Progress" Style="margin-bottom: 20px" />
+        }
       </div>
     </div>
-  }
-  @if (ShowEditFolder)
-  {
+    <hr />
     <div class="row justify-content-start mt-1">
       <div class="col-12">
-        <EditForm Model="NewFolderModel" OnValidSubmit="HandleValidSubmit">
-          <DataAnnotationsValidator />
-          <ValidationSummary />
-          <div class="form-group">
-            <label for="exampleInputPassword1">Name</label>
-            <RadzenTextBox Style="display: block;" @bind-Value="NewFolderModel.Name" />
-          </div>
-          <button type="submit" class="btn btn-primary mt-2 mb-2">Create</button>
-        </EditForm>
+        <h3>Files</h3>
+        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="5"
+                    AllowSorting="true" Data="@DocumentModels" TItem="DModel">
+          <Columns>
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="DModel" Width="150px" Property="DocumentId.Value" Title="Id" />
+            <RadzenGridColumn TItem="DModel" Property="FileName" Title="Name" />
+            <RadzenGridColumn TItem="DModel" Property="Folder.Name" Title="Folder" />
+            <RadzenGridColumn TItem="DModel" Width="175px">
+              <Template Context="data">
+                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>
+                <a target="_blank" class="btn btn-outline-secondary btn-sm" href="@APIUrl/document/download/@data.DocumentId.Value">Download</a>
+              </Template>
+            </RadzenGridColumn>
+          </Columns>
+        </RadzenGrid>
       </div>
     </div>
   }
-  <hr />
-  <div class="row justify-content-start mt-1">
-    <div class="col-12">
-      <h3>Files</h3>
-      <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="4"
-                  AllowSorting="true" Data="@DocumentModels"  TItem="DModel">
-        <Columns>
-          <RadzenGridColumn Filterable="false" Sortable="false" TItem="DModel" Width="150px" Property="DocumentId.Value" Title="Document Id" />
-          <RadzenGridColumn TItem="DModel" Property="FileName" Title="Name" />
-          <RadzenGridColumn TItem="DModel" Property="Folder.Name" Title="Folder" />
-        </Columns>
-      </RadzenGrid>
-    </div>
-  </div>
 </div>

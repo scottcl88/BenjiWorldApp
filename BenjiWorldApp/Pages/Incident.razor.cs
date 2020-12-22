@@ -27,11 +27,13 @@ namespace BenjiWorldApp.Pages
             Model.IncidentDate = DateTime.UtcNow;
             ShowEditData = false;
             IncidentModels = new List<IncidentModel>();
-            IncidentTypes = Enum.GetValues(typeof(IncidentType)).Cast<IncidentType>().Select(x => new IncidentTypeModel() { Name = x.ToString(), Value = (int)x });
+            IncidentTypes = Extensions.GetDisplayDictonary(typeof(IncidentType)).Select(x => new IncidentTypeModel() { Name = x.Key, Value = x.Value });
         }
         public IEnumerable<IncidentTypeModel> IncidentTypes;
         public List<IncidentModel> IncidentModels { get; set; }
         public int IncidentTypeValue { get; set; }
+        [Inject]
+        protected DialogService DialogService { get; set; }
         [Inject]
         public BenjiAPIClient Client { get; set; }
         [Inject]
@@ -56,6 +58,7 @@ namespace BenjiWorldApp.Pages
             var myDog = await Client.GetDefaultDog();
             DogModel = new DogModel(myDog);
             IncidentModels = await Client.GetAllIncident();
+            DialogService.OnClose += (res) => Close(res);
         }
         public async Task HandleValidSubmit()
         {
@@ -90,8 +93,8 @@ namespace BenjiWorldApp.Pages
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
                 ShowEditData = false;
-                StateHasChanged();
                 IncidentModels = await Client.GetAllIncident();
+                StateHasChanged();
             }
             else
             {
@@ -103,15 +106,39 @@ namespace BenjiWorldApp.Pages
             ShowEditData = true;
             StateHasChanged();
         }
-        public void EditData(MouseEventArgs e)
+        public void EditData(MouseEventArgs e, IncidentModel model)
         {
             ShowEditData = true;
+            Model = model;
             StateHasChanged();
         }
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditData = false;
             StateHasChanged();
+        }
+        public async Task DeleteData()
+        {
+            var result = await Client.DeleteIncident(new IncidentDeleteRequest() { IncidentId = Model.IncidentId });
+            if (result.IsSuccessStatusCode)
+            {
+                NotificationService.Notify(NotificationSeverity.Success, "Deleted successfully");
+                ShowEditData = false;
+                IncidentModels = await Client.GetAllIncident();
+                StateHasChanged();
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
+            }
+        }
+
+        public async Task Close(dynamic result)
+        {
+            if (result)
+            {
+                await DeleteData();
+            }
         }
         //////////////////////////
         ///
