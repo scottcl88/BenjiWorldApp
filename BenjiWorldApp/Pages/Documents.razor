@@ -65,7 +65,7 @@
         <button class="btn btn-sm btn-primary" @onclick="EditFolder" style="margin-top: -28px;"><i class="fas fa-edit"></i></button>
       </div>
       <div class="col-6">
-        <RadzenUpload Multiple="true" Url="@($"{UploadUrl}/{SelectedFolderId}")" ChooseText="Upload File" Accept="image/*"
+        <RadzenUpload Multiple="true" Url="@($"{UploadUrl}/{SelectedFolderId}")" ChooseText="Upload File"
                       Progress="@OnProgress" Complete="Completed" Error="Error" />
       </div>
       <div class="col-6">
