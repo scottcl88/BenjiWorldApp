@@ -1,26 +1,19 @@
 ﻿using DataExtensions;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Logging;
 using Models;
 using Radzen;
 using Radzen.Blazor;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace BenjiWorldApp.Pages
 {
     public class Category
     {
-
         public string CategoryName { get; set; }
         public List<DocumentModel> Products { get; set; }
     }
@@ -42,6 +35,7 @@ namespace BenjiWorldApp.Pages
             APIUrl = builder.Configuration["APIUrl"];
             UploadUrl = APIUrl + "/document/upload/multiple";
         }
+
         public long SelectedFolderId { get; set; }
         public IEnumerable<DocumentModel> DocumentModels { get; set; }
         public List<SelectedFolderModel> FolderModels { get; set; }
@@ -54,8 +48,10 @@ namespace BenjiWorldApp.Pages
 
         [Inject]
         public BenjiAPIClient Client { get; set; }
+
         [Inject]
         protected NotificationService NotificationService { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             var docs = await Client.GetAllDocuments();
@@ -84,6 +80,7 @@ namespace BenjiWorldApp.Pages
             Progress = 0;
             StateHasChanged();
         }
+
         public void Error(UploadErrorEventArgs args)
         {
             NotificationService.Notify(NotificationSeverity.Error, "Failed: " + args.Message);
@@ -131,6 +128,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
+
         public async Task HandleValidDocumentSubmit()
         {
             HttpResponseMessage result = null;
@@ -156,6 +154,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
+
         public void EditData(MouseEventArgs e, DocumentModel model)
         {
             Model = model;
@@ -163,22 +162,26 @@ namespace BenjiWorldApp.Pages
             ShowEditDocument = true;
             StateHasChanged();
         }
+
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditFolder = false;
             ShowEditDocument = false;
             StateHasChanged();
         }
+
         public void AddFolder(MouseEventArgs e)
         {
             ShowEditFolder = true;
             StateHasChanged();
         }
+
         public void EditFolder(MouseEventArgs e)
         {
             ShowEditFolder = true;
             StateHasChanged();
         }
+
         public async Task DeleteData(MouseEventArgs e)
         {
             var result = await Client.DeleteDocument(new DocumentDeleteRequest() { DocumentId = Model.DocumentId });

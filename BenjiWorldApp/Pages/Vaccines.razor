@@ -27,11 +27,11 @@
             <div class="col-6">
               <div class="form-group">
                 <label>Received</label>
-                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Received" DateFormat="MM/dd/yyyy"/>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Received" DateFormat="MM/dd/yyyy" />
               </div>
               <div class="form-group">
                 <label>Expiration</label>
-                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Expiration" DateFormat="MM/dd/yyyy"/>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Expiration" DateFormat="MM/dd/yyyy" />
               </div>
             </div>
           </div>
@@ -78,7 +78,6 @@
             <button type="submit" class="btn btn-primary mt-2 mb-2">Add</button>
             <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2 offset-4" @onclick="CancelEditData">Cancel</button>
           }
-
         </EditForm>
       </div>
     </div>
@@ -113,7 +112,7 @@
             <RadzenGridColumn TItem="IModel">
               <Template Context="data">
                 <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>
-              </Template>   
+              </Template>
               <FooterTemplate>
                 Total Records: <b>@VaccineModels.Count()</b>
               </FooterTemplate>

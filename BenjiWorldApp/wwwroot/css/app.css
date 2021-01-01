@@ -1,29 +1,33 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-/*    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    /*    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
     font-family: 'Merriweather', serif;
 }
 
 .btn-link {
     color: #0366d6;
 }
-.ui-fileupload-buttonbar{
+
+.ui-fileupload-buttonbar {
     background: none !important;
 }
+
 .btn {
     border-radius: 0;
 }
+
 a, a:hover, a:visited {
     color: black;
     text-decoration: none;
 }
-.navbar-brand{
+
+.navbar-brand {
     font-size: 32px;
     font-weight: bold;
 }
 
-h1{
+h1 {
     font-size: 34px;
     font-weight: bold;
 }
@@ -76,10 +80,10 @@ app {
             margin-left: 1.5rem;
         }
 
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .main .top-row a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 .content {
     padding-top: 5rem;
@@ -113,12 +117,12 @@ app {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {

@@ -1,5 +1,4 @@
-﻿using BenjiWorldApp.Shared;
-using DataExtensions;
+﻿using DataExtensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Models;
@@ -7,7 +6,6 @@ using Models.Shared;
 using Radzen;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -26,18 +24,24 @@ namespace BenjiWorldApp.Pages
             BoardingModels = new List<BoardingModel>();
             IncidentTypes = Enum.GetValues(typeof(IncidentType)).Cast<IncidentType>().Select(x => new IncidentTypeModel() { Name = x.ToString(), Value = (int)x });
         }
+
         public IEnumerable<IncidentTypeModel> IncidentTypes;
         public List<BoardingModel> BoardingModels { get; set; }
         public int IncidentTypeValue { get; set; }
+
         [Inject]
         public BenjiAPIClient Client { get; set; }
+
         [Inject]
         protected NotificationService NotificationService { get; set; }
+
         [Inject]
         protected DialogService DialogService { get; set; }
+
         public BoardingModel Model { get; set; }
         public DogModel DogModel { get; set; }
         public bool ShowEditData { get; set; }
+
         public void Change(object value)
         {
             try
@@ -49,6 +53,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", ex.Message, 6000);
             }
         }
+
         protected override async Task OnInitializedAsync()
         {
             var myDog = await Client.GetDefaultDog();
@@ -56,6 +61,7 @@ namespace BenjiWorldApp.Pages
             BoardingModels = await Client.GetAllBoarding();
             DialogService.OnClose += (res) => Close(res);
         }
+
         public async Task HandleValidSubmit()
         {
             HttpResponseMessage result = null;
@@ -105,6 +111,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
+
         public void AddData(MouseEventArgs e)
         {
             ShowEditData = true;
@@ -114,17 +121,20 @@ namespace BenjiWorldApp.Pages
             };
             StateHasChanged();
         }
+
         public void EditData(MouseEventArgs e, BoardingModel model)
         {
             ShowEditData = true;
             Model = model;
             StateHasChanged();
         }
+
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditData = false;
             StateHasChanged();
         }
+
         public async Task DeleteData()
         {
             var result = await Client.DeleteBoarding(new BoardingDeleteRequest() { BoardingId = Model.BoardingId });

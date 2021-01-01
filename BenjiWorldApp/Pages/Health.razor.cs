@@ -5,8 +5,6 @@ using Models;
 using Radzen;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -21,14 +19,19 @@ namespace BenjiWorldApp.Pages
             ShowEditData = false;
             HealthModels = new List<HealthModel>();
         }
+
         public List<HealthModel> HealthModels { get; set; }
+
         [Inject]
         public BenjiAPIClient Client { get; set; }
+
         [Inject]
         protected NotificationService NotificationService { get; set; }
+
         public HealthModel Model { get; set; }
         public DogModel DogModel { get; set; }
         public bool ShowEditData { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             var myDog = await Client.GetDefaultDog();
@@ -36,6 +39,7 @@ namespace BenjiWorldApp.Pages
             var healthData = await Client.GetAllHealth();
             HealthModels = healthData;
         }
+
         public async Task HandleValidSubmit()
         {
             HttpResponseMessage result = null;
@@ -80,29 +84,33 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
+
         public void AddData(MouseEventArgs e)
         {
             ShowEditData = true;
             StateHasChanged();
         }
+
         public void EditData(MouseEventArgs e)
         {
             ShowEditData = true;
             StateHasChanged();
         }
+
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditData = false;
             StateHasChanged();
         }
+
         //////////////////////////
         ///
         public bool smooth = true;
+
         public class DataItem
         {
             public DateTime Date { get; set; }
             public decimal Weight { get; set; }
         }
-
     }
 }

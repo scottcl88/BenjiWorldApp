@@ -17,5 +17,5 @@ export function getCurrentTime() {
 
 export function getRelativeTime(date) {
     console.log("getRelativeTime 1 called with date: ", date, countdown.SECONDS);
-    return countdown(new Date(date), null, ~(countdown.HOURS | countdown.MINUTES |countdown.SECONDS | countdown.MILLISECONDS)).toString();
+    return countdown(new Date(date), null, ~(countdown.HOURS | countdown.MINUTES | countdown.SECONDS | countdown.MILLISECONDS)).toString();
 }

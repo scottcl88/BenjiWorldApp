@@ -1,14 +1,11 @@
-using System;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Components;
 using Radzen;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BenjiWorldApp
 {
@@ -29,7 +26,6 @@ namespace BenjiWorldApp
             string apiUrl = builder.Configuration["APIUrl"];
             //builder.Services.AddHttpClient<BenjiAPIClient>(client => client.BaseAddress = new Uri("http://localhost:59006"));
             builder.Services.AddHttpClient<BenjiAPIClient>(client => client.BaseAddress = new Uri(apiUrl));
-
 
             builder.Logging.SetMinimumLevel(LogLevel.Debug);
             //builder.Logging.AddProvider(new CustomLoggingProvider());

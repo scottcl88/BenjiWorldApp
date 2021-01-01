@@ -1,21 +1,15 @@
-using System;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using DataExtensions;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Models;
-using System.Net.Http.Json;
-using DataExtensions;
-using System.Text.Json;
-using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
-using System.Threading;
 using Models.Shared;
-using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BenjiWorldApp
 {
@@ -26,7 +20,7 @@ namespace BenjiWorldApp
     //    var task = Repeat.Interval(
     //            TimeSpan.FromSeconds(15), () => GetRelativeTime(), cancellationTokenSource.Token);
     //}
-    static class CancellationTokenExtensions
+    internal static class CancellationTokenExtensions
     {
         public static bool WaitCancellationRequested(
             this CancellationToken token,
@@ -35,6 +29,7 @@ namespace BenjiWorldApp
             return token.WaitHandle.WaitOne(timeout);
         }
     }
+
     internal static class Repeat
     {
         public static Task Interval(
@@ -57,6 +52,7 @@ namespace BenjiWorldApp
                 }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
     }
+
     public class BenjiAPIClient
     {
         private readonly HttpClient client;
@@ -69,6 +65,7 @@ namespace BenjiWorldApp
 
         [Inject]
         protected ILogger<BenjiAPIClient> Logger { get; set; }
+
         //[Inject]
         //protected ILoggerFactory LoggerFactory { get; set; }
 
@@ -79,6 +76,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<FoodModel>>($"/food/GetAll");
         }
+
         public async Task<List<IncidentModel>> GetAllIncident()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -86,6 +84,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<IncidentModel>>($"/incident/GetAll");
         }
+
         public async Task<List<BoardingModel>> GetAllBoarding()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -93,6 +92,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<BoardingModel>>($"/boarding/GetAll");
         }
+
         public async Task<List<VaccineModel>> GetAllVaccines()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -100,6 +100,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<VaccineModel>>($"/vaccine/GetAll");
         }
+
         public async Task<List<HealthModel>> GetAllHealth()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -107,6 +108,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<HealthModel>>($"/health/GetAll");
         }
+
         public async Task<List<FolderModel>> GetAllFolders()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -114,6 +116,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<FolderModel>>($"/folder/GetAll");
         }
+
         public async Task<List<DocumentModel>> GetAllDocuments()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -121,6 +124,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<DocumentModel>>($"/document/GetAll");
         }
+
         public async Task<DogModel> GetDefaultDog()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -128,6 +132,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<DogModel>($"/dog/get");
         }
+
         public async Task<DogModel> GetDog(int dogId)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -135,6 +140,7 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<DogModel>($"/dog/get/{dogId}");
         }
+
         public async Task<HttpResponseMessage> UpdateDog(DogUpdateRequest request)
         {
             Logger.LogInformation("Updating Dog with request");
@@ -147,13 +153,14 @@ namespace BenjiWorldApp
 
             //var addItem = new { Name = "Test" };
             Logger.LogInformation("Updating Dog with request 1");
-            var result =  await client.PostAsync($"/dog/update", stringContent); 
+            var result = await client.PostAsync($"/dog/update", stringContent);
             var postContent = await result.Content.ReadAsStringAsync();
-            Logger.LogInformation("Updating Dog got result: "+ postContent);
+            Logger.LogInformation("Updating Dog got result: " + postContent);
             Logger.LogInformation("Updating Dog is success: " + result.IsSuccessStatusCode);
 
             return result;
         }
+
         public async Task<HttpResponseMessage> CreateDog(DogCreateRequest request)
         {
             Logger.LogInformation("Creating Dog with request");
@@ -184,6 +191,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/folder/add", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> UpdateFolder(FolderUpdateRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -214,6 +222,7 @@ namespace BenjiWorldApp
 
             return result;
         }
+
         public async Task<HttpResponseMessage> UpdateHealth(HealthUpdateRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -224,6 +233,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/health/update", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> CreateIncident(IncidentCreateRequest request)
         {
             Logger.LogInformation("Creating Health with request");
@@ -243,6 +253,7 @@ namespace BenjiWorldApp
 
             return result;
         }
+
         public async Task<HttpResponseMessage> UpdateIncident(IncidentUpdateRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -253,6 +264,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Incident/update", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> DeleteIncident(IncidentDeleteRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -263,6 +275,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Incident/delete", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> CreateBoarding(BoardingCreateRequest request)
         {
             Logger.LogInformation("Creating Health with request");
@@ -282,6 +295,7 @@ namespace BenjiWorldApp
 
             return result;
         }
+
         public async Task<HttpResponseMessage> UpdateBoarding(BoardingUpdateRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -292,6 +306,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Boarding/update", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> DeleteBoarding(BoardingDeleteRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -302,6 +317,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Boarding/delete", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> CreateVaccine(VaccineCreateRequest request)
         {
             Logger.LogInformation("Creating Vaccine with request");
@@ -321,6 +337,7 @@ namespace BenjiWorldApp
 
             return result;
         }
+
         public async Task<HttpResponseMessage> UpdateVaccine(VaccineUpdateRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -331,6 +348,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Vaccine/update", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> DeleteVaccine(VaccineDeleteRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -341,6 +359,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Vaccine/delete", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> CreateFood(FoodCreateRequest request)
         {
             Logger.LogInformation("Creating food with request");
@@ -360,6 +379,7 @@ namespace BenjiWorldApp
 
             return result;
         }
+
         public async Task<HttpResponseMessage> UpdateFood(FoodUpdateRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -370,6 +390,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/food/update", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> UpdateDocument(DocumentUpdateRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
@@ -380,6 +401,7 @@ namespace BenjiWorldApp
             var result = await client.PostAsync($"/Document/update", stringContent);
             return result;
         }
+
         public async Task<HttpResponseMessage> DeleteDocument(DocumentDeleteRequest request)
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");

@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BenjiWorldApp.Shared
 {
@@ -16,11 +12,11 @@ namespace BenjiWorldApp.Shared
 
         [Inject]
         protected IJSRuntime JsRunTime { get; set; }
+
         [Parameter]
         public DateTime RelativeDateTime { get; set; }
 
         [Parameter]
-
         public double Interval { get; set; }
 
         protected override void OnInitialized()
@@ -34,9 +30,9 @@ namespace BenjiWorldApp.Shared
                 await InvokeAsync(StateHasChanged);
             };
             _timer.Enabled = true;
-        }    
+        }
 
-        async void GetRelativeTime()
+        private async void GetRelativeTime()
         {
             var dateTimeStr = await JsRunTime.InvokeAsync<string>("MyLib.GetRelativeTime", RelativeDateTime);
 

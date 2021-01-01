@@ -6,7 +6,6 @@ using Models.Shared;
 using Radzen;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,6 +17,7 @@ namespace BenjiWorldApp.Pages
         public string Name { get; set; }
         public int Value { get; set; }
     }
+
     public class IncidentBase : ComponentBase
     {
         public IncidentBase()
@@ -29,18 +29,24 @@ namespace BenjiWorldApp.Pages
             IncidentModels = new List<IncidentModel>();
             IncidentTypes = Extensions.GetDisplayDictonary(typeof(IncidentType)).Select(x => new IncidentTypeModel() { Name = x.Key, Value = x.Value });
         }
+
         public IEnumerable<IncidentTypeModel> IncidentTypes;
         public List<IncidentModel> IncidentModels { get; set; }
         public int IncidentTypeValue { get; set; }
+
         [Inject]
         protected DialogService DialogService { get; set; }
+
         [Inject]
         public BenjiAPIClient Client { get; set; }
+
         [Inject]
         protected NotificationService NotificationService { get; set; }
+
         public IncidentModel Model { get; set; }
         public DogModel DogModel { get; set; }
         public bool ShowEditData { get; set; }
+
         public void Change(object value)
         {
             try
@@ -53,6 +59,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", ex.Message, 6000);
             }
         }
+
         protected override async Task OnInitializedAsync()
         {
             var myDog = await Client.GetDefaultDog();
@@ -60,6 +67,7 @@ namespace BenjiWorldApp.Pages
             IncidentModels = await Client.GetAllIncident();
             DialogService.OnClose += (res) => Close(res);
         }
+
         public async Task HandleValidSubmit()
         {
             HttpResponseMessage result = null;
@@ -101,22 +109,26 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
+
         public void AddData(MouseEventArgs e)
         {
             ShowEditData = true;
             StateHasChanged();
         }
+
         public void EditData(MouseEventArgs e, IncidentModel model)
         {
             ShowEditData = true;
             Model = model;
             StateHasChanged();
         }
+
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditData = false;
             StateHasChanged();
         }
+
         public async Task DeleteData()
         {
             var result = await Client.DeleteIncident(new IncidentDeleteRequest() { IncidentId = Model.IncidentId });
@@ -140,14 +152,15 @@ namespace BenjiWorldApp.Pages
                 await DeleteData();
             }
         }
+
         //////////////////////////
         ///
         public bool smooth = true;
+
         public class DataItem
         {
             public DateTime Date { get; set; }
             public decimal Weight { get; set; }
         }
-
     }
 }

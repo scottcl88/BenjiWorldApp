@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BenjiWorldApp.Shared
 {
-    public class MainLayoutBase: LayoutComponentBase
+    public class MainLayoutBase : LayoutComponentBase
     {
         public MarkupString RelativeTimeA = new MarkupString("");
 
         private System.Timers.Timer _timer;
 
         public DateTime Birthdate { get; set; }
+
         [Inject]
         protected IJSRuntime JsRunTime { get; set; }
+
         [Inject]
         public BenjiAPIClient Client { get; set; }
+
         protected override void OnInitialized()
         {
             _timer = new System.Timers.Timer(1 * 1000 * 60);
@@ -35,7 +36,8 @@ namespace BenjiWorldApp.Shared
                 _timer.Enabled = true;
             });
         }
-        async void GetRelativeTime()
+
+        private async void GetRelativeTime()
         {
             var dateTimeStr = await JsRunTime.InvokeAsync<string>("MyLib.GetRelativeTime", Birthdate);
 

@@ -71,7 +71,7 @@ window.Radzen = {
             });
 
             Radzen[id].instance.addListener('click', function (e) {
-                Radzen[id].invokeMethodAsync('RadzenGoogleMap.OnMapClick', { Position: { Lat: e.latLng.lat(), Lng: e.latLng.lng()} });
+                Radzen[id].invokeMethodAsync('RadzenGoogleMap.OnMapClick', { Position: { Lat: e.latLng.lat(), Lng: e.latLng.lng() } });
             });
 
             Radzen.updateMap(id, zoom, center, markers)
@@ -79,7 +79,6 @@ window.Radzen = {
     },
     updateMap: function (id, zoom, center, markers) {
         if (Radzen[id] && Radzen[id].instance) {
-
             if (Radzen[id].instance.markers && Radzen[id].instance.markers.length) {
                 for (var i = 0; i < Radzen[id].instance.markers.length; i++) {
                     Radzen[id].instance.markers[i].setMap(null);
@@ -96,7 +95,7 @@ window.Radzen = {
                 });
 
                 marker.addListener('click', function (e) {
-                    Radzen[id].invokeMethodAsync('RadzenGoogleMap.OnMarkerClick', { Title: marker.title, Label: marker.label, Position : marker.position});
+                    Radzen[id].invokeMethodAsync('RadzenGoogleMap.OnMarkerClick', { Title: marker.title, Label: marker.label, Position: marker.position });
                 });
 
                 marker.setMap(Radzen[id].instance);
@@ -309,7 +308,6 @@ window.Radzen = {
         if (/Edge/.test(navigator.userAgent)) {
             var scrollLeft = document.body.scrollLeft
             var scrollTop = document.body.scrollTop;
-
         } else {
             var scrollLeft = document.documentElement.scrollLeft
             var scrollTop = document.documentElement.scrollTop;
@@ -511,21 +509,21 @@ window.Radzen = {
         return { width: rect.width, height: rect.height };
     },
     destroyScheduler: function (ref) {
-      if (ref.resizeHandler) {
-          window.removeEventListener("resize", ref.resizeHandler);
-          delete ref.resizeHandler;
-      }
+        if (ref.resizeHandler) {
+            window.removeEventListener("resize", ref.resizeHandler);
+            delete ref.resizeHandler;
+        }
     },
     createScheduler: function (ref, instance) {
-      ref.resizeHandler = function () {
+        ref.resizeHandler = function () {
+            var rect = ref.getBoundingClientRect();
+
+            instance.invokeMethodAsync("Resize", rect.width, rect.height);
+        };
+
+        window.addEventListener("resize", ref.resizeHandler);
+
         var rect = ref.getBoundingClientRect();
-
-        instance.invokeMethodAsync("Resize", rect.width, rect.height);
-      };
-
-      window.addEventListener("resize", ref.resizeHandler);
-
-      var rect = ref.getBoundingClientRect();
-      return { width: rect.width, height: rect.height };
+        return { width: rect.width, height: rect.height };
     }
 };

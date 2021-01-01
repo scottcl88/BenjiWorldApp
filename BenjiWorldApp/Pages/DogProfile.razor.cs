@@ -1,15 +1,11 @@
 ﻿using DataExtensions;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Logging;
 using Models;
 using Radzen;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace BenjiWorldApp.Pages
@@ -19,6 +15,7 @@ namespace BenjiWorldApp.Pages
         public string Name { get; set; }
         public int Value { get; set; }
     }
+
     public class DogProfileBase : ComponentBase
     {
         public DogProfileBase()
@@ -33,9 +30,12 @@ namespace BenjiWorldApp.Pages
 
         [Inject]
         public BenjiAPIClient Client { get; set; }
+
         [Inject]
         protected NotificationService NotificationService { get; set; }
-        public IEnumerable<GenderModel> Genders; 
+
+        public IEnumerable<GenderModel> Genders;
+
         public void Change(object value)
         {
             try
@@ -44,7 +44,7 @@ namespace BenjiWorldApp.Pages
                 Model.Gender = (Gender)value;
                 StateHasChanged();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", ex.Message, 6000);
             }
@@ -52,12 +52,14 @@ namespace BenjiWorldApp.Pages
 
             //events.Add(DateTime.Now, $"{name} value changed to {str}");
         }
+
         protected override async Task OnInitializedAsync()
         {
             var myDog = await Client.GetDefaultDog();
             Model = new DogModel(myDog);
             GenderValue = (int)myDog.Gender;
         }
+
         public async Task HandleValidSubmit()
         {
             HttpResponseMessage result = null;
@@ -96,6 +98,5 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
-
     }
 }

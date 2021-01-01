@@ -6,8 +6,6 @@ using Models.Shared;
 using Radzen;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -18,6 +16,7 @@ namespace BenjiWorldApp.Pages
         public string Name { get; set; }
         public int Value { get; set; }
     }
+
     public class FoodBase : ComponentBase
     {
         public FoodBase()
@@ -27,16 +26,21 @@ namespace BenjiWorldApp.Pages
             ShowEditData = false;
             FoodModels = new List<FoodModel>();
         }
+
         public IEnumerable<FoodTypeModel> FoodTypes;
         public List<FoodModel> FoodModels { get; set; }
         public int FoodTypeValue { get; set; }
+
         [Inject]
         public BenjiAPIClient Client { get; set; }
+
         [Inject]
         protected NotificationService NotificationService { get; set; }
+
         public FoodModel Model { get; set; }
         public DogModel DogModel { get; set; }
         public bool ShowEditData { get; set; }
+
         public void Change(object value)
         {
             try
@@ -48,6 +52,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", ex.Message, 6000);
             }
         }
+
         protected override async Task OnInitializedAsync()
         {
             var myDog = await Client.GetDefaultDog();
@@ -55,6 +60,7 @@ namespace BenjiWorldApp.Pages
             Model.Dog = DogModel;
             FoodModels = await Client.GetAllFood();
         }
+
         public async Task HandleValidSubmit()
         {
             HttpResponseMessage result = null;
@@ -92,29 +98,33 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", result.ReasonPhrase, 6000);
             }
         }
+
         public void AddData(MouseEventArgs e)
         {
             ShowEditData = true;
             StateHasChanged();
         }
+
         public void EditData(MouseEventArgs e)
         {
             ShowEditData = true;
             StateHasChanged();
         }
+
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditData = false;
             StateHasChanged();
         }
+
         //////////////////////////
         ///
         public bool smooth = true;
+
         public class DataItem
         {
             public DateTime Date { get; set; }
             public decimal Weight { get; set; }
         }
-
     }
 }
