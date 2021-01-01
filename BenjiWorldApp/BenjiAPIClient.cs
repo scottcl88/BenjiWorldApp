@@ -3,56 +3,14 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Models;
 using Models.Shared;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BenjiWorldApp
 {
-    //protected override void OnInitialized()
-    //{
-    //    GetRelativeTime();
-    //    var cancellationTokenSource = new CancellationTokenSource();
-    //    var task = Repeat.Interval(
-    //            TimeSpan.FromSeconds(15), () => GetRelativeTime(), cancellationTokenSource.Token);
-    //}
-    internal static class CancellationTokenExtensions
-    {
-        public static bool WaitCancellationRequested(
-            this CancellationToken token,
-            TimeSpan timeout)
-        {
-            return token.WaitHandle.WaitOne(timeout);
-        }
-    }
-
-    internal static class Repeat
-    {
-        public static Task Interval(
-            TimeSpan pollInterval,
-            Action action,
-            CancellationToken token)
-        {
-            // We don't use Observable.Interval:
-            // If we block, the values start bunching up behind each other.
-            return Task.Factory.StartNew(
-                () =>
-                {
-                    for (; ; )
-                    {
-                        if (token.WaitCancellationRequested(pollInterval))
-                            break;
-
-                        action();
-                    }
-                }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-        }
-    }
-
     public class BenjiAPIClient
     {
         private readonly HttpClient client;
@@ -65,9 +23,6 @@ namespace BenjiWorldApp
 
         [Inject]
         protected ILogger<BenjiAPIClient> Logger { get; set; }
-
-        //[Inject]
-        //protected ILoggerFactory LoggerFactory { get; set; }
 
         public async Task<List<FoodModel>> GetAllFood()
         {
@@ -240,7 +195,6 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
-            //var postRequest = JsonSerializer.Serialize<DogUpdateRequest>(request);
             var serialized = System.Text.Json.JsonSerializer.Serialize(request); //JsonConvert.SerializeObject(request);
             var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
 

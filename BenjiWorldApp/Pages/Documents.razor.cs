@@ -63,8 +63,7 @@ namespace BenjiWorldApp.Pages
         }
 
         ///////////////////////////////////////////
-        ///
-        public RadzenUpload upload;
+        public RadzenUpload Upload { get; set; }
 
         public double Progress { get; set; }
 
@@ -167,12 +166,6 @@ namespace BenjiWorldApp.Pages
         {
             ShowEditFolder = false;
             ShowEditDocument = false;
-            StateHasChanged();
-        }
-
-        public void AddFolder(MouseEventArgs e)
-        {
-            ShowEditFolder = true;
             StateHasChanged();
         }
 

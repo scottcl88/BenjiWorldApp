@@ -86,9 +86,9 @@
     </div>
     <div class="row">
       <div class="col-md-6 col-sm-12 p-4">
-        <label>Smooth <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox></label>
+        <label>Smooth <RadzenCheckBox @bind-Value="@Smooth" Name="smooth"></RadzenCheckBox></label>
         <RadzenChart>
-          <RadzenLineSeries Smooth="@smooth" Data="@IncidentModels" CategoryProperty="IncidentDate" Title="2020 Incidents" LineType="LineType.Dashed" ValueProperty="IncidentType">
+          <RadzenLineSeries Smooth="@Smooth" Data="@IncidentModels" CategoryProperty="IncidentDate" Title="2020 Incidents" LineType="LineType.Dashed" ValueProperty="IncidentType">
             <RadzenMarkers MarkerType="MarkerType.Square" />
           </RadzenLineSeries>
           <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}" />

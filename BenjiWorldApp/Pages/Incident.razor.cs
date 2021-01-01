@@ -30,7 +30,8 @@ namespace BenjiWorldApp.Pages
             IncidentTypes = Extensions.GetDisplayDictonary(typeof(IncidentType)).Select(x => new IncidentTypeModel() { Name = x.Key, Value = x.Value });
         }
 
-        public IEnumerable<IncidentTypeModel> IncidentTypes;
+        public bool Smooth { get; set; } = true;
+        public IEnumerable<IncidentTypeModel> IncidentTypes { get; set; }
         public List<IncidentModel> IncidentModels { get; set; }
         public int IncidentTypeValue { get; set; }
 
@@ -152,10 +153,6 @@ namespace BenjiWorldApp.Pages
                 await DeleteData();
             }
         }
-
-        //////////////////////////
-        ///
-        public bool smooth = true;
 
         public class DataItem
         {

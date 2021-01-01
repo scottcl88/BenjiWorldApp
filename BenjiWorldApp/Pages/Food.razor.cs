@@ -27,7 +27,7 @@ namespace BenjiWorldApp.Pages
             FoodModels = new List<FoodModel>();
         }
 
-        public IEnumerable<FoodTypeModel> FoodTypes;
+        public IEnumerable<FoodTypeModel> FoodTypes { get; set; }
         public List<FoodModel> FoodModels { get; set; }
         public int FoodTypeValue { get; set; }
 
@@ -105,21 +105,11 @@ namespace BenjiWorldApp.Pages
             StateHasChanged();
         }
 
-        public void EditData(MouseEventArgs e)
-        {
-            ShowEditData = true;
-            StateHasChanged();
-        }
-
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditData = false;
             StateHasChanged();
         }
-
-        //////////////////////////
-        ///
-        public bool smooth = true;
 
         public class DataItem
         {

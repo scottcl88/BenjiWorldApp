@@ -25,7 +25,7 @@ namespace BenjiWorldApp.Pages
             IncidentTypes = Enum.GetValues(typeof(IncidentType)).Cast<IncidentType>().Select(x => new IncidentTypeModel() { Name = x.ToString(), Value = (int)x });
         }
 
-        public IEnumerable<IncidentTypeModel> IncidentTypes;
+        public IEnumerable<IncidentTypeModel> IncidentTypes { get; set; }
         public List<VaccineModel> VaccineModels { get; set; }
         public int IncidentTypeValue { get; set; }
 

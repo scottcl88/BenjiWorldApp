@@ -61,7 +61,7 @@
       <div class="col-auto">
         <RadzenDropDown TValue="long" Placeholder="Select Folder..." Data="@FolderModels" TextProperty="Name" ValueProperty="Id" Value="SelectedFolderId"
                         Change="@Change" Style="margin-top: 10px;" />
-        <button class="btn btn-sm btn-primary" @onclick="AddFolder" style="margin-top: -28px;"><i class="fas fa-folder-plus"></i></button>
+        <button class="btn btn-sm btn-primary" @onclick="EditFolder" style="margin-top: -28px;"><i class="fas fa-folder-plus"></i></button>
         <button class="btn btn-sm btn-primary" @onclick="EditFolder" style="margin-top: -28px;"><i class="fas fa-edit"></i></button>
       </div>
       <div class="col-6">

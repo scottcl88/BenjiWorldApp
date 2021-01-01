@@ -6,7 +6,6 @@ using Models.Shared;
 using Radzen;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -22,10 +21,8 @@ namespace BenjiWorldApp.Pages
             };
             ShowEditData = false;
             BoardingModels = new List<BoardingModel>();
-            IncidentTypes = Enum.GetValues(typeof(IncidentType)).Cast<IncidentType>().Select(x => new IncidentTypeModel() { Name = x.ToString(), Value = (int)x });
         }
 
-        public IEnumerable<IncidentTypeModel> IncidentTypes;
         public List<BoardingModel> BoardingModels { get; set; }
         public int IncidentTypeValue { get; set; }
 

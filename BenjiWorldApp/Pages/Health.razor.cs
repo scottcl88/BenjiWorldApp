@@ -19,7 +19,7 @@ namespace BenjiWorldApp.Pages
             ShowEditData = false;
             HealthModels = new List<HealthModel>();
         }
-
+        public bool Smooth { get; set; } = true;
         public List<HealthModel> HealthModels { get; set; }
 
         [Inject]
@@ -91,12 +91,6 @@ namespace BenjiWorldApp.Pages
             StateHasChanged();
         }
 
-        public void EditData(MouseEventArgs e)
-        {
-            ShowEditData = true;
-            StateHasChanged();
-        }
-
         public void CancelEditData(MouseEventArgs e)
         {
             ShowEditData = false;
@@ -104,8 +98,6 @@ namespace BenjiWorldApp.Pages
         }
 
         //////////////////////////
-        ///
-        public bool smooth = true;
 
         public class DataItem
         {
