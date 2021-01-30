@@ -1,7 +1,6 @@
 ﻿using DataExtensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Models;
 using Models.Shared;
 using Radzen;
 using System;
@@ -20,6 +19,7 @@ namespace BenjiWorldApp.Pages
             ShowEditData = false;
             HealthModels = new List<HealthModel>();
         }
+
         public bool Smooth { get; set; } = true;
         public List<HealthModel> HealthModels { get; set; }
 
