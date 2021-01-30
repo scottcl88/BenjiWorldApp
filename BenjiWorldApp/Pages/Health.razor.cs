@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Models;
+using Models.Shared;
 using Radzen;
 using System;
 using System.Collections.Generic;

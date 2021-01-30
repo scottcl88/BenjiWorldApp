@@ -1,6 +1,7 @@
 ﻿using DataExtensions;
 using Microsoft.AspNetCore.Components;
 using Models;
+using Models.Shared;
 using Radzen;
 using System;
 using System.Collections.Generic;
@@ -71,6 +72,9 @@ namespace BenjiWorldApp.Pages
                 request.Dog.AdoptedDate = Model.AdoptedDate;
                 request.Dog.Birthdate = Model.Birthdate;
                 request.Dog.Gender = Model.Gender;
+                request.Dog.MicrochipNumber = Model.MicrochipNumber;
+                request.Dog.RabiesTagNumber = Model.RabiesTagNumber;
+                request.Dog.Fixed = Model.Fixed;
                 request.Dog.Created = Model.Created;
                 request.Dog.Modified = Model.Modified;
                 request.Dog.Deleted = Model.Deleted;
@@ -84,6 +88,9 @@ namespace BenjiWorldApp.Pages
                 request.Dog.AdoptedDate = Model.AdoptedDate;
                 request.Dog.Birthdate = Model.Birthdate;
                 request.Dog.Gender = Model.Gender;
+                request.Dog.MicrochipNumber = Model.MicrochipNumber;
+                request.Dog.RabiesTagNumber = Model.RabiesTagNumber;
+                request.Dog.Fixed = Model.Fixed;
                 request.Dog.Created = Model.Created;
                 request.Dog.Modified = Model.Modified;
                 request.Dog.Deleted = Model.Deleted;
