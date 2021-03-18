@@ -54,6 +54,20 @@ namespace BenjiWorldApp
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
             return await client.GetFromJsonAsync<List<VaccineModel>>($"/vaccine/GetAll");
         }
+        public async Task<List<VetVisitModel>> GetAllVetVisits()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<List<VetVisitModel>>($"/VetVisit/GetAll");
+        }
+        public async Task<List<TreatmentModel>> GetAllTreatments()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<List<TreatmentModel>>($"/Treatment/GetAll");
+        }
 
         public async Task<List<HealthModel>> GetAllHealth()
         {
@@ -363,6 +377,89 @@ namespace BenjiWorldApp
             var serialized = System.Text.Json.JsonSerializer.Serialize(request);
             var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
             var result = await client.PostAsync($"/Document/delete", stringContent);
+            return result;
+        }
+
+        public async Task<HttpResponseMessage> CreateVetVisit(VetVisitCreateRequest request)
+        {
+            Logger.LogInformation("Creating VetVisit with request");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            //var postRequest = JsonSerializer.Serialize<DogUpdateRequest>(request);
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request); //JsonConvert.SerializeObject(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+
+            //var addItem = new { Name = "Test" };
+            Logger.LogInformation("Creating VetVisit with request 1");
+            var result = await client.PostAsync($"/VetVisit/add", stringContent);
+            var postContent = await result.Content.ReadAsStringAsync();
+            Logger.LogInformation("Creating VetVisit got result: " + postContent);
+            Logger.LogInformation("Creating VetVisit is success: " + result.IsSuccessStatusCode);
+
+            return result;
+        }
+
+        public async Task<HttpResponseMessage> UpdateVetVisit(VetVisitUpdateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/VetVisit/update", stringContent);
+            return result;
+        }
+
+        public async Task<HttpResponseMessage> DeleteVetVisit(VetVisitDeleteRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/VetVisit/delete", stringContent);
+            return result;
+        }
+        public async Task<HttpResponseMessage> CreateTreatment(TreatmentCreateRequest request)
+        {
+            Logger.LogInformation("Creating Treatment with request");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            //var postRequest = JsonSerializer.Serialize<DogUpdateRequest>(request);
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request); //JsonConvert.SerializeObject(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+
+            //var addItem = new { Name = "Test" };
+            Logger.LogInformation("Creating Treatment with request 1");
+            var result = await client.PostAsync($"/Treatment/add", stringContent);
+            var postContent = await result.Content.ReadAsStringAsync();
+            Logger.LogInformation("Creating Treatment got result: " + postContent);
+            Logger.LogInformation("Creating Treatment is success: " + result.IsSuccessStatusCode);
+
+            return result;
+        }
+
+        public async Task<HttpResponseMessage> UpdateTreatment(TreatmentUpdateRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Treatment/update", stringContent);
+            return result;
+        }
+
+        public async Task<HttpResponseMessage> DeleteTreatment(TreatmentDeleteRequest request)
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            var serialized = System.Text.Json.JsonSerializer.Serialize(request);
+            var stringContent = new StringContent(serialized, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync($"/Treatment/delete", stringContent);
             return result;
         }
     }

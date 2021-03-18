@@ -1,0 +1,128 @@
+﻿@page "/Treatments"
+@inherits TreatmentsBase
+@using IModel = Models.Shared.TreatmentModel
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <h1>Treatments</h1>
+    </div>
+  </div>
+  @if (ShowEditData)
+  {
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+          <DataAnnotationsValidator />
+          <ValidationSummary />
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Title</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Title" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Visit Date</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.ReceivedDateTime" DateFormat="MM/dd/yyyy" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Doctor</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Doctor" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Amount</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Amount" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Duration</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.Duration" DateFormat="MM/dd/yyyy" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Comments</label>
+                <RadzenTextArea class="col-6" Style="display: block;" @bind-Value="Model.Comments" />
+              </div>
+            </div>
+          </div>
+          @if (Model.TreatmentId != null && Model.TreatmentId.Value > 0)
+          {
+            <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
+            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
+            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-3" @onclick="ShowInlineDialog">Delete</button>
+          }
+          else
+          {
+            <button type="submit" class="btn btn-primary mt-2 mb-2">Add</button>
+            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2 offset-4" @onclick="CancelEditData">Cancel</button>
+          }
+        </EditForm>
+      </div>
+    </div>
+  }
+  @if (!ShowEditData)
+  {
+    <div class="row justify-content-start">
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary btn-md" @onclick="AddData">ADD DATA</button>
+      </div>
+    </div>
+    <hr />
+    <div class="row justify-content-start mt-1">
+      <div class="col-12">
+        <h3>Data</h3>
+        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="5"
+                    AllowSorting="true" Data="@TreatmentModels" TItem="IModel">
+          <Columns>
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="TreatmentsId.Value" Title="Id">
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="IModel" Property="Title" Title="Title" />
+            <RadzenGridColumn TItem="IModel" Property="VisitDateTime" Title="Visit Date">
+              <Template Context="data">
+                @String.Format("{0:d}", data.ReceivedDateTime)
+              </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="IModel">
+              <Template Context="data">
+                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>
+              </Template>
+              <FooterTemplate>
+                Total Records: <b>@TreatmentModels.Count()</b>
+              </FooterTemplate>
+            </RadzenGridColumn>
+          </Columns>
+        </RadzenGrid>
+      </div>
+    </div>
+  }
+</div>
+@code {
+  async Task ShowInlineDialog() => await DialogService.OpenAsync("Are you sure?", ds =>
+  @<div>
+    <p Style="margin-bottom: 1rem">Are you sure you want to delete?</p>
+    <div class="row">
+      <div class="col-md-12">
+        <RadzenButton Text="Yes" Click="() => ds.Close(true)" ButtonStyle="ButtonStyle.Danger" Style="margin-bottom: 10px; width: 150px" />
+        <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px" />
+      </div>
+    </div>
+  </div>);
+}
