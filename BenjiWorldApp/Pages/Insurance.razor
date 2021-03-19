@@ -1,11 +1,11 @@
-﻿@page "/Treatments"
-@inherits TreatmentsBase
-@using IModel = Models.Shared.TreatmentModel
+﻿@page "/Insurance"
+@inherits InsuranceBase
+@using IModel = Models.Shared.InsuranceModel
 
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-auto">
-      <h1>Treatments</h1>
+      <h1>Insurance</h1>
     </div>
   </div>
   @if (ShowEditData)
@@ -18,52 +18,84 @@
           <div class="row justify-content-start mt-1">
             <div class="col-12">
               <div class="form-group">
-                <label>Title</label>
-                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Title" />
+                <label>Company</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Company" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>PolicyId</label>
+                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.PolicyId.Value" />
               </div>
             </div>
           </div>
           <div class="row justify-content-start mt-1">
             <div class="col-6">
               <div class="form-group">
-                <label>Received Time</label>
-                <RadzenDatePicker Style="display: block;" @bind-Value="Model.ReceivedDateTime" ShowTime="true" HourFormat="12" DateFormat="MM/dd/yyyy h:mm tt" />
+                <label>Start Date</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.StartDateTime" DateFormat="MM/dd/yyyy" />
               </div>
             </div>
           </div>
           <div class="row justify-content-start mt-1">
             <div class="col-6">
               <div class="form-group">
-                <label>Expiration</label>
-                <RadzenDatePicker Style="display: block;" @bind-Value="Model.ExpirationDateTime" ShowTime="true" HourFormat="12" DateFormat="MM/dd/yyyy h:mm tt" />
+                <label>End Date</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.EndDateTime" DateFormat="MM/dd/yyyy" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Renewal Date</label>
+                <RadzenDatePicker Style="display: block;" @bind-Value="Model.RenewalDateTime" DateFormat="MM/dd/yyyy" />
               </div>
             </div>
           </div>
           <div class="row justify-content-start mt-1">
             <div class="col-12">
               <div class="form-group">
-                <label>Doctor</label>
-                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Doctor" />
+                <label>Payment Amount</label>
+                <RadzenNumeric  class="col-6" TValue="decimal?" @bind-Value="Model.PaymentAmount" Placeholder="Enter or clear value" Style="display: block;" />
               </div>
             </div>
           </div>
           <div class="row justify-content-start mt-1">
             <div class="col-12">
               <div class="form-group">
-                <label>Amount</label>
-                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Amount" />
+                <label>Payment Frequency</label>
+                <RadzenNumeric class="col-6" Disabled="true" TValue="TimeSpan?" @bind-Value="Model.PaymentFrequency" Placeholder="Enter or clear value" Style="display: block;" />
               </div>
             </div>
           </div>
           <div class="row justify-content-start mt-1">
             <div class="col-12">
               <div class="form-group">
-                <label>Comments</label>
-                <RadzenTextArea class="col-6" Style="display: block;" @bind-Value="Model.Comments" />
+                <label>Deductible Amount</label>
+                <RadzenNumeric class="col-6" TValue="decimal?" @bind-Value="Model.DeductibleAmount" Placeholder="Enter or clear value" Style="display: block;" />
               </div>
             </div>
           </div>
-          @if (Model.TreatmentId != null && Model.TreatmentId.Value > 0)
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Reimbursement Percentage</label>
+                <RadzenNumeric class="col-6" TValue="int?" @bind-Value="Model.ReimbursementPercentage" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-12">
+              <div class="form-group">
+                <label>Annual Coverage Limit</label>
+                <RadzenNumeric class="col-6" TValue="decimal?" @bind-Value="Model.AnnualCoverageLimit" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          @if (Model.InsuranceId != null && Model.InsuranceId.Value > 0)
           {
             <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
             <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
@@ -90,23 +122,22 @@
       <div class="col-12">
         <h3>Data</h3>
         <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="5"
-                    AllowSorting="true" Data="@TreatmentModels" TItem="IModel">
+                    AllowSorting="true" Data="@InsuranceModels" TItem="IModel">
           <Columns>
-            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="TreatmentId.Value" Title="Id">
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="IModel" Width="125px" Property="InsuranceId.Value" Title="Id">
             </RadzenGridColumn>
-            <RadzenGridColumn TItem="IModel" Property="Title" Title="Title" />
-            <RadzenGridColumn TItem="IModel" Property="ReceivedDateTime" Title="Received Date">
+            <RadzenGridColumn TItem="IModel" Property="Company" Title="Company" />
+            <RadzenGridColumn TItem="IModel" Property="StartDateTime" Title="Start Date">
               <Template Context="data">
-                @String.Format("{0:d}", data.ReceivedDateTime)
+                @String.Format("{0:d}", data.StartDateTime)
               </Template>
             </RadzenGridColumn>
             <RadzenGridColumn TItem="IModel">
               <Template Context="data">
                 <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>
-                <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => CopyData(e, data)">Copy</button>
               </Template>
               <FooterTemplate>
-                Total Records: <b>@TreatmentModels.Count()</b>
+                Total Records: <b>@InsuranceModels.Count()</b>
               </FooterTemplate>
             </RadzenGridColumn>
           </Columns>

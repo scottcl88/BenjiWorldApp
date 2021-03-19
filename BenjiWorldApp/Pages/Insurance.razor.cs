@@ -11,21 +11,21 @@ using System.Threading.Tasks;
 
 namespace BenjiWorldApp.Pages
 {
-    public class TreatmentsBase : ComponentBase
+    public class InsuranceBase : ComponentBase
     {
-        public TreatmentsBase()
+        public InsuranceBase()
         {
-            Model = new TreatmentModel
+            Model = new InsuranceModel
             {
                 Created = DateTime.UtcNow
             };
             ShowEditData = false;
-            TreatmentModels = new List<TreatmentModel>();
+            InsuranceModels = new List<InsuranceModel>();
             IncidentTypes = Enum.GetValues(typeof(IncidentType)).Cast<IncidentType>().Select(x => new IncidentTypeModel() { Name = x.ToString(), Value = (int)x });
         }
 
         public IEnumerable<IncidentTypeModel> IncidentTypes { get; set; }
-        public List<TreatmentModel> TreatmentModels { get; set; }
+        public List<InsuranceModel> InsuranceModels { get; set; }
         public int IncidentTypeValue { get; set; }
 
         [Inject]
@@ -37,7 +37,7 @@ namespace BenjiWorldApp.Pages
         [Inject]
         protected DialogService DialogService { get; set; }
 
-        public TreatmentModel Model { get; set; }
+        public InsuranceModel Model { get; set; }
         public DogModel DogModel { get; set; }
         public bool ShowEditData { get; set; }
 
@@ -57,48 +57,58 @@ namespace BenjiWorldApp.Pages
         {
             var myDog = await Client.GetDefaultDog();
             DogModel = new DogModel(myDog);
-            TreatmentModels = await Client.GetAllTreatments();
+            InsuranceModels = await Client.GetAllInsurance();
             DialogService.OnClose += (res) => Close(res);
         }
 
         public async Task HandleValidSubmit()
         {
             HttpResponseMessage result = null;
-            if (Model.TreatmentId == null || Model.TreatmentId.Value == 0)
+            if (Model.InsuranceId == null || Model.InsuranceId.Value == 0)
             {
-                var request = new TreatmentCreateRequest();
-                request.Treatment.Created = Model.Created;
-                request.Treatment.Modified = DateTime.UtcNow;
-                request.Treatment.Dog = DogModel;
-                request.Treatment.Title = Model.Title;
-                request.Treatment.Doctor = Model.Doctor;
-                request.Treatment.ReceivedDateTime = Model.ReceivedDateTime;
-                request.Treatment.Comments = Model.Comments;
-                request.Treatment.Amount = Model.Amount;
-                request.Treatment.ExpirationDateTime = Model.ExpirationDateTime;
-                result = await Client.CreateTreatment(request);
+                var request = new InsuranceCreateRequest();
+                request.Insurance.Created = Model.Created;
+                request.Insurance.Modified = DateTime.UtcNow;
+                request.Insurance.Dog = DogModel;
+                request.Insurance.AnnualCoverageLimit = Model.AnnualCoverageLimit;
+                request.Insurance.DeductibleAmount = Model.DeductibleAmount;
+                request.Insurance.EndDateTime = Model.EndDateTime;
+                request.Insurance.PaymentAmount = Model.PaymentAmount;
+                request.Insurance.PaymentFrequency = Model.PaymentFrequency;
+                request.Insurance.Company = Model.Company;
+                request.Insurance.PolicyId = Model.PolicyId;
+                request.Insurance.ReimbursementPercentage = Model.ReimbursementPercentage;
+                request.Insurance.RenewalDateTime = Model.RenewalDateTime;
+                request.Insurance.StartDateTime = Model.StartDateTime;
+                request.Insurance.Website = Model.Website;
+                result = await Client.CreateInsurance(request);
             }
             else
             {
-                var request = new TreatmentUpdateRequest();
-                request.Treatment.TreatmentId = Model.TreatmentId;
-                request.Treatment.Title = Model.Title;
-                request.Treatment.Doctor = Model.Doctor;
-                request.Treatment.ReceivedDateTime = Model.ReceivedDateTime;
-                request.Treatment.Comments = Model.Comments;
-                request.Treatment.Amount = Model.Amount;
-                request.Treatment.ExpirationDateTime = Model.ExpirationDateTime;
-                request.Treatment.Deleted = Model.Deleted;
-                request.Treatment.Created = Model.Created;
-                request.Treatment.Modified = Model.Modified;
-                request.Treatment.Dog = DogModel;
-                result = await Client.UpdateTreatment(request);
+                var request = new InsuranceUpdateRequest();
+                request.Insurance.InsuranceId = Model.InsuranceId;
+                request.Insurance.AnnualCoverageLimit = Model.AnnualCoverageLimit;
+                request.Insurance.DeductibleAmount = Model.DeductibleAmount;
+                request.Insurance.EndDateTime = Model.EndDateTime;
+                request.Insurance.PaymentAmount = Model.PaymentAmount;
+                request.Insurance.PaymentFrequency = Model.PaymentFrequency;
+                request.Insurance.Company = Model.Company;
+                request.Insurance.PolicyId = Model.PolicyId;
+                request.Insurance.ReimbursementPercentage = Model.ReimbursementPercentage;
+                request.Insurance.RenewalDateTime = Model.RenewalDateTime;
+                request.Insurance.StartDateTime = Model.StartDateTime;
+                request.Insurance.Website = Model.Website;
+                request.Insurance.Deleted = Model.Deleted;
+                request.Insurance.Created = Model.Created;
+                request.Insurance.Modified = Model.Modified;
+                request.Insurance.Dog = DogModel;
+                result = await Client.UpdateInsurance(request);
             }
             if (result.IsSuccessStatusCode)
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
                 ShowEditData = false;
-                TreatmentModels = await Client.GetAllTreatments();
+                InsuranceModels = await Client.GetAllInsurance();
                 StateHasChanged();
             }
             else
@@ -110,24 +120,17 @@ namespace BenjiWorldApp.Pages
         public void AddData(MouseEventArgs e)
         {
             ShowEditData = true;
-            Model = new TreatmentModel
+            Model = new InsuranceModel
             {
                 Created = DateTime.UtcNow
             };
             StateHasChanged();
         }
 
-        public void EditData(MouseEventArgs e, TreatmentModel model)
+        public void EditData(MouseEventArgs e, InsuranceModel model)
         {
             ShowEditData = true;
             Model = model;
-            StateHasChanged();
-        }
-        public void CopyData(MouseEventArgs e, TreatmentModel model)
-        {
-            ShowEditData = true;
-            Model = model;
-            Model.TreatmentId = new TreatmentId();
             StateHasChanged();
         }
 
@@ -139,12 +142,12 @@ namespace BenjiWorldApp.Pages
 
         public async Task DeleteData()
         {
-            var result = await Client.DeleteTreatment(new TreatmentDeleteRequest() { TreatmentId = Model.TreatmentId });
+            var result = await Client.DeleteInsurance(new InsuranceDeleteRequest() { InsuranceId = Model.InsuranceId });
             if (result.IsSuccessStatusCode)
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Deleted successfully");
                 ShowEditData = false;
-                TreatmentModels = await Client.GetAllTreatments();
+                InsuranceModels = await Client.GetAllInsurance();
                 StateHasChanged();
             }
             else
