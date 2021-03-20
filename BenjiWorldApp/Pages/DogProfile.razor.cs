@@ -40,7 +40,6 @@ namespace BenjiWorldApp.Pages
         {
             try
             {
-                //NotificationService.Notify(NotificationSeverity.Info, "Working", value.ToString());
                 Model.Gender = (Gender)value;
                 StateHasChanged();
             }
@@ -48,9 +47,6 @@ namespace BenjiWorldApp.Pages
             {
                 NotificationService.Notify(NotificationSeverity.Error, "Failed", ex.Message, 6000);
             }
-            //var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
-
-            //events.Add(DateTime.Now, $"{name} value changed to {str}");
         }
 
         protected override async Task OnInitializedAsync()

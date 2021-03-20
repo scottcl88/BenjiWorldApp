@@ -100,6 +100,13 @@ namespace BenjiWorldApp
             return await client.GetFromJsonAsync<List<DocumentModel>>($"/document/GetAll");
         }
 
+        public async Task<InsuranceModel> GetDefaultInsurance()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<InsuranceModel>($"/Insurance/get");
+        }
         public async Task<DogModel> GetDefaultDog()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");

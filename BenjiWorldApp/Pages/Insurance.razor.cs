@@ -11,6 +11,11 @@ using System.Threading.Tasks;
 
 namespace BenjiWorldApp.Pages
 {
+    public class FrequencyModel
+    {
+        public string Name { get; set; }
+        public int Value { get; set; }
+    }
     public class InsuranceBase : ComponentBase
     {
         public InsuranceBase()
@@ -22,8 +27,27 @@ namespace BenjiWorldApp.Pages
             ShowEditData = false;
             InsuranceModels = new List<InsuranceModel>();
             IncidentTypes = Enum.GetValues(typeof(IncidentType)).Cast<IncidentType>().Select(x => new IncidentTypeModel() { Name = x.ToString(), Value = (int)x });
+            FrequencyModels = new List<FrequencyModel>();
+            FrequencyModels.Add(new FrequencyModel() { Name = "Unknown", Value = 0 });
+            FrequencyModels.Add(new FrequencyModel() { Name = "Monthly", Value = 30 });
+            FrequencyModels.Add(new FrequencyModel() { Name = "Yearly", Value = 365 });
         }
 
+        public List<FrequencyModel> FrequencyModels;
+        public int FrequencyDays { get; set; }
+        public void ChangeFrequency(object value)
+        {
+            try
+            {
+                int days = (int)value;
+                Model.PaymentFrequencyDays = days;
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Failed", ex.Message, 6000);
+            }
+        }
         public IEnumerable<IncidentTypeModel> IncidentTypes { get; set; }
         public List<InsuranceModel> InsuranceModels { get; set; }
         public int IncidentTypeValue { get; set; }
@@ -57,7 +81,13 @@ namespace BenjiWorldApp.Pages
         {
             var myDog = await Client.GetDefaultDog();
             DogModel = new DogModel(myDog);
-            InsuranceModels = await Client.GetAllInsurance();
+            //InsuranceModels = await Client.GetAllInsurance();
+            Model = await Client.GetDefaultInsurance();
+            Model.PaymentAmount = decimal.Round(Model.PaymentAmount ?? 0, 2, MidpointRounding.AwayFromZero);
+            Model.DeductibleAmount = decimal.Round(Model.DeductibleAmount ?? 0, 2, MidpointRounding.AwayFromZero);
+            Model.AnnualCoverageLimit = decimal.Round(Model.AnnualCoverageLimit ?? 0, 2, MidpointRounding.AwayFromZero);
+            ShowEditData = true;
+            FrequencyDays = Model.PaymentFrequencyDays ?? 0;
             DialogService.OnClose += (res) => Close(res);
         }
 
@@ -71,10 +101,11 @@ namespace BenjiWorldApp.Pages
                 request.Insurance.Modified = DateTime.UtcNow;
                 request.Insurance.Dog = DogModel;
                 request.Insurance.AnnualCoverageLimit = Model.AnnualCoverageLimit;
+                request.Insurance.UnlimitedAnnualCoverageLimit = Model.UnlimitedAnnualCoverageLimit;
                 request.Insurance.DeductibleAmount = Model.DeductibleAmount;
                 request.Insurance.EndDateTime = Model.EndDateTime;
                 request.Insurance.PaymentAmount = Model.PaymentAmount;
-                request.Insurance.PaymentFrequency = Model.PaymentFrequency;
+                request.Insurance.PaymentFrequencyDays = Model.PaymentFrequencyDays;
                 request.Insurance.Company = Model.Company;
                 request.Insurance.PolicyId = Model.PolicyId;
                 request.Insurance.ReimbursementPercentage = Model.ReimbursementPercentage;
@@ -88,10 +119,11 @@ namespace BenjiWorldApp.Pages
                 var request = new InsuranceUpdateRequest();
                 request.Insurance.InsuranceId = Model.InsuranceId;
                 request.Insurance.AnnualCoverageLimit = Model.AnnualCoverageLimit;
+                request.Insurance.UnlimitedAnnualCoverageLimit = Model.UnlimitedAnnualCoverageLimit;
                 request.Insurance.DeductibleAmount = Model.DeductibleAmount;
                 request.Insurance.EndDateTime = Model.EndDateTime;
                 request.Insurance.PaymentAmount = Model.PaymentAmount;
-                request.Insurance.PaymentFrequency = Model.PaymentFrequency;
+                request.Insurance.PaymentFrequencyDays = Model.PaymentFrequencyDays;
                 request.Insurance.Company = Model.Company;
                 request.Insurance.PolicyId = Model.PolicyId;
                 request.Insurance.ReimbursementPercentage = Model.ReimbursementPercentage;
@@ -107,8 +139,8 @@ namespace BenjiWorldApp.Pages
             if (result.IsSuccessStatusCode)
             {
                 NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
-                ShowEditData = false;
-                InsuranceModels = await Client.GetAllInsurance();
+                //ShowEditData = false;
+                //InsuranceModels = await Client.GetAllInsurance();
                 StateHasChanged();
             }
             else
@@ -131,6 +163,7 @@ namespace BenjiWorldApp.Pages
         {
             ShowEditData = true;
             Model = model;
+            FrequencyDays = Model.PaymentFrequencyDays ?? 0;
             StateHasChanged();
         }
 

@@ -56,10 +56,16 @@
                 <RadzenDatePicker Style="display: block;" @bind-Value="Model.RenewalDateTime" DateFormat="MM/dd/yyyy" />
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
               <div class="form-group">
                 <label>Annual Coverage Limit</label>
-                <RadzenNumeric class="col-12" TValue="decimal?" @bind-Value="Model.AnnualCoverageLimit" Placeholder="Enter or clear value" Style="display: block;" />
+                <RadzenNumeric class="col-12" Disabled="@Model.UnlimitedAnnualCoverageLimit" TValue="decimal?" @bind-Value="Model.AnnualCoverageLimit" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+            <div class="col-2">
+              <div class="form-group">
+                <label>Unlimited</label>
+                <RadzenCheckBox Style="display: block;" @bind-Value="Model.UnlimitedAnnualCoverageLimit" />
               </div>
             </div>
           </div>
@@ -73,7 +79,10 @@
             <div class="col-6">
               <div class="form-group">
                 <label>Payment Frequency</label>
-                <RadzenNumeric class="col-12" Disabled="true" TValue="TimeSpan?" @bind-Value="Model.PaymentFrequency" Placeholder="Enter or clear value" Style="display: block;" />
+                <RadzenDropDown AllowClear="true" TValue="int"
+                                Data="@FrequencyModels"
+                                TextProperty="Name" ValueProperty="Value" Style="display: block;" @bind-Value="FrequencyDays" Change="@(args => ChangeFrequency(args))" />
+                @*<RadzenNumeric class="col-12" Disabled="true" TValue="TimeSpan?" @bind-Value="Model.PaymentFrequency" Placeholder="Enter or clear value" Style="display: block;" />*@
               </div>
             </div>
           </div>
@@ -91,22 +100,12 @@
               </div>
             </div>
           </div>
-          @if (Model.InsuranceId != null && Model.InsuranceId.Value > 0)
-          {
-            <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
-            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
-            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-8" @onclick="ShowInlineDialog">Delete</button>
-          }
-          else
-          {
-            <button type="submit" class="btn btn-primary mt-2 mb-2">Add</button>
-            <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2 offset-4" @onclick="CancelEditData">Cancel</button>
-          }
+          <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
         </EditForm>
       </div>
     </div>
   }
-  @if (!ShowEditData)
+  @*@if (!ShowEditData)
   {
     <div class="row justify-content-start">
       <div class="col-auto">
@@ -140,7 +139,7 @@
         </RadzenGrid>
       </div>
     </div>
-  }
+  }*@
 </div>
 @code {
   async Task ShowInlineDialog() => await DialogService.OpenAsync("Are you sure?", ds =>
