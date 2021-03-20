@@ -2,6 +2,7 @@ using DataExtensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Models.Shared;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -23,6 +24,20 @@ namespace BenjiWorldApp
         [Inject]
         protected ILogger<BenjiAPIClient> Logger { get; set; }
 
+        public async Task<DateTime> GetLastBackup()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<DateTime>($"/Backup/GetLastBackup");
+        }
+        public async Task<bool> AddBackup()
+        {
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Credentials", "true");
+            client.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Content-Type");
+            return await client.GetFromJsonAsync<bool>($"/Backup/AddBackup");
+        }
         public async Task<List<FoodModel>> GetAllFood()
         {
             client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");

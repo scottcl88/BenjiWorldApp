@@ -1,0 +1,21 @@
+﻿@page "/Backup"
+@inherits BackupBase
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <h1>Backup</h1>
+    </div>
+  </div>
+  <div class="row justify-content-start mt-1">
+    <div class="col-6">
+      <h4>Last Backup Time:</h4>
+      <p>@LastBackup.ToString("M/dd/yyyy h:mm tt")</p>
+    </div>
+  </div>
+  <div class="row justify-content-start mt-1">
+    <div class="col-6">
+      <RadzenButton Click=@(args => AddBackup()) Text="Add New Backup" />
+    </div>
+  </div>
+</div>
