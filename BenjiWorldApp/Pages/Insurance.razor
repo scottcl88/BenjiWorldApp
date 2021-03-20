@@ -16,18 +16,22 @@
           <DataAnnotationsValidator />
           <ValidationSummary />
           <div class="row justify-content-start mt-1">
-            <div class="col-12">
+            <div class="col-4">
               <div class="form-group">
                 <label>Company</label>
-                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.Company" />
+                <RadzenTextBox class="col-12" Style="display: block;" @bind-Value="Model.Company" />
               </div>
             </div>
-          </div>
-          <div class="row justify-content-start mt-1">
-            <div class="col-12">
+            <div class="col-4">
+              <div class="form-group">
+                <label>Website</label>
+                <RadzenTextBox class="col-12" Style="display: block;" @bind-Value="Model.Website" />
+              </div>
+            </div>
+            <div class="col-4">
               <div class="form-group">
                 <label>PolicyId</label>
-                <RadzenTextBox class="col-6" Style="display: block;" @bind-Value="Model.PolicyId.Value" />
+                <RadzenTextBox class="col-12" Style="display: block;" @bind-Value="Model.PolicyId.Value" />
               </div>
             </div>
           </div>
@@ -38,8 +42,6 @@
                 <RadzenDatePicker Style="display: block;" @bind-Value="Model.StartDateTime" DateFormat="MM/dd/yyyy" />
               </div>
             </div>
-          </div>
-          <div class="row justify-content-start mt-1">
             <div class="col-6">
               <div class="form-group">
                 <label>End Date</label>
@@ -54,44 +56,38 @@
                 <RadzenDatePicker Style="display: block;" @bind-Value="Model.RenewalDateTime" DateFormat="MM/dd/yyyy" />
               </div>
             </div>
-          </div>
-          <div class="row justify-content-start mt-1">
-            <div class="col-12">
-              <div class="form-group">
-                <label>Payment Amount</label>
-                <RadzenNumeric  class="col-6" TValue="decimal?" @bind-Value="Model.PaymentAmount" Placeholder="Enter or clear value" Style="display: block;" />
-              </div>
-            </div>
-          </div>
-          <div class="row justify-content-start mt-1">
-            <div class="col-12">
-              <div class="form-group">
-                <label>Payment Frequency</label>
-                <RadzenNumeric class="col-6" Disabled="true" TValue="TimeSpan?" @bind-Value="Model.PaymentFrequency" Placeholder="Enter or clear value" Style="display: block;" />
-              </div>
-            </div>
-          </div>
-          <div class="row justify-content-start mt-1">
-            <div class="col-12">
-              <div class="form-group">
-                <label>Deductible Amount</label>
-                <RadzenNumeric class="col-6" TValue="decimal?" @bind-Value="Model.DeductibleAmount" Placeholder="Enter or clear value" Style="display: block;" />
-              </div>
-            </div>
-          </div>
-          <div class="row justify-content-start mt-1">
-            <div class="col-12">
-              <div class="form-group">
-                <label>Reimbursement Percentage</label>
-                <RadzenNumeric class="col-6" TValue="int?" @bind-Value="Model.ReimbursementPercentage" Placeholder="Enter or clear value" Style="display: block;" />
-              </div>
-            </div>
-          </div>
-          <div class="row justify-content-start mt-1">
-            <div class="col-12">
+            <div class="col-6">
               <div class="form-group">
                 <label>Annual Coverage Limit</label>
-                <RadzenNumeric class="col-6" TValue="decimal?" @bind-Value="Model.AnnualCoverageLimit" Placeholder="Enter or clear value" Style="display: block;" />
+                <RadzenNumeric class="col-12" TValue="decimal?" @bind-Value="Model.AnnualCoverageLimit" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Payment Amount</label>
+                <RadzenNumeric class="col-12" TValue="decimal?" @bind-Value="Model.PaymentAmount" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Payment Frequency</label>
+                <RadzenNumeric class="col-12" Disabled="true" TValue="TimeSpan?" @bind-Value="Model.PaymentFrequency" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-start mt-1">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Deductible Amount</label>
+                <RadzenNumeric class="col-12" TValue="decimal?" @bind-Value="Model.DeductibleAmount" Placeholder="Enter or clear value" Style="display: block;" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Reimbursement Percentage</label>
+                <RadzenNumeric class="col-12" TValue="int?" @bind-Value="Model.ReimbursementPercentage" Placeholder="Enter or clear value" Style="display: block;" />
               </div>
             </div>
           </div>
@@ -99,7 +95,7 @@
           {
             <button type="submit" class="btn btn-primary mt-2 mb-2">Update</button>
             <button type="button" class="btn btn-secondary mr-3 mt-2 mb-2" @onclick="CancelEditData">Cancel</button>
-            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-3" @onclick="ShowInlineDialog">Delete</button>
+            <button type="button" class="btn btn-danger mr-3 mt-2 mb-2 offset-8" @onclick="ShowInlineDialog">Delete</button>
           }
           else
           {

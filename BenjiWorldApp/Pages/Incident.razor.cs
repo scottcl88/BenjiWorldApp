@@ -65,6 +65,7 @@ namespace BenjiWorldApp.Pages
             var myDog = await Client.GetDefaultDog();
             DogModel = new DogModel(myDog);
             IncidentModels = await Client.GetAllIncident();
+            IncidentModels = IncidentModels.OrderByDescending(x => x.IncidentDate).ToList();
             DialogService.OnClose += (res) => Close(res);
         }
 
@@ -102,6 +103,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Success, "Saved successfully");
                 ShowEditData = false;
                 IncidentModels = await Client.GetAllIncident();
+                IncidentModels = IncidentModels.OrderByDescending(x => x.IncidentDate).ToList();
                 StateHasChanged();
             }
             else
@@ -137,6 +139,7 @@ namespace BenjiWorldApp.Pages
                 NotificationService.Notify(NotificationSeverity.Success, "Deleted successfully");
                 ShowEditData = false;
                 IncidentModels = await Client.GetAllIncident();
+                IncidentModels = IncidentModels.OrderByDescending(x => x.IncidentDate).ToList();
                 StateHasChanged();
             }
             else
