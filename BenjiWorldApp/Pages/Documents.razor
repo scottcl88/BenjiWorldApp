@@ -79,12 +79,13 @@
     <div class="row justify-content-start mt-1">
       <div class="col-12">
         <h3>Files</h3>
-        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="5"
+        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowPaging="true" PageSize="15"
                     AllowSorting="true" Data="@DocumentModels" TItem="DModel">
           <Columns>
-            <RadzenGridColumn Filterable="false" Sortable="false" TItem="DModel" Width="150px" Property="DocumentId.Value" Title="Id" />
+            <RadzenGridColumn Filterable="false" Sortable="false" TItem="DModel" Width="50px" Property="DocumentId.Value" Title="Id" />
             <RadzenGridColumn TItem="DModel" Property="FileName" Title="Name" />
             <RadzenGridColumn TItem="DModel" Property="Folder.Name" Title="Folder" />
+            <RadzenGridColumn TItem="DModel" Property="Created" Title="Created" />
             <RadzenGridColumn TItem="DModel" Width="175px">
               <Template Context="data">
                 <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="(e) => EditData(e, data)">Edit</button>

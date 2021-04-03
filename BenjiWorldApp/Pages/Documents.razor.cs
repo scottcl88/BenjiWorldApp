@@ -55,7 +55,7 @@ namespace BenjiWorldApp.Pages
         protected override async Task OnInitializedAsync()
         {
             var docs = await Client.GetAllDocuments();
-            DocumentModels = docs;
+            DocumentModels = docs.OrderByDescending(x => x.Created);
             var folders = await Client.GetAllFolders();
             FolderModels = folders.Select(x => new SelectedFolderModel() { Id = x.FolderId.Value, Name = x.Name }).ToList();
             SelectedFolderId = FolderModels.First().Id;
