@@ -1,6 +1,6 @@
 # BenjiWorldApp
 
-A simple website for tracking information about my dog (Benji)
+A simple website for tracking information about my dog (Benji). The backend API is [BenjiAPI](https://github.com/scottcl88/BenjiAPI) project.
 
 Developed by Scott Lewis
 
