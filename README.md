@@ -1,11 +1,12 @@
 # BenjiWorldApp
 
-A simple website for tracking my dog, Benji's, information
+A simple website for tracking information about my dog (Benji)
 
 Developed by Scott Lewis
 
 ## Noteable Technologies Used
 
+- Blazor Web Assembly
 - Radzen - UI Components
 - NHibernate - SQL object-relational database framework
 
