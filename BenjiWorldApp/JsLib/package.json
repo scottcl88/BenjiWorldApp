@@ -12,7 +12,7 @@
   "dependencies": {
     "countdown": "^2.6.0",
     "moment": "^2.29.1",
-    "webpack": "^4.46.0",
+    "webpack": "^5.74.0",
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
