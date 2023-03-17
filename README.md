@@ -9,6 +9,7 @@ Developed by Scott Lewis
 - Blazor Web Assembly
 - Radzen - UI Components
 - NHibernate - SQL object-relational database framework
+- .NET Standard 2.1
 
 ## Legal
 Copyright 2022 Scott Lewis, All rights reserved.
